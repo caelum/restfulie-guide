@@ -12,6 +12,8 @@ First we need to receive the POST data and transform it into our domain data. On
 rails hotel-system
 cd hotel-system
 script/generate scaffold hotel name:string city:string room_count:integer
+rake db:create:all
+rake db:migrate
 [/server code]
 
 We then configure restfulie at **enviroment.rb**:
@@ -31,7 +33,7 @@ config.action_controller.allow_forgery_protection    = false
 [server example]
 class Hotel < ActiveRecord
 	acts_as_restfulie
-	content_type "vnd/hotel+xml", "vnd/hotel+json"
+	media_type "vnd/hotel+xml", "vnd/hotel+json"
 end
 [/server example]
 
@@ -71,8 +73,8 @@ Note that render_created will already do it for us, returning a response as:
 There is one major validation step missing in the code above: the object created invoking *Restfulie.from* might not be a hotel and we are not checking its content-type. In order to check it if the request media-type matches the expected one:
 
 [code]
-	valid = Restfulie::MediaType.supports?(content_type) &&
-        	Restfulie::MediaType.media_type(content_type) == Hotel
+	valid = Restfulie::MediaType.supports?(request.headers['CONTENT_TYPE']) &&
+        	Restfulie::MediaType.media_type(request.headers['CONTENT_TYPE']) == Hotel
 [/code]
 [/box]
 
@@ -93,7 +95,7 @@ end
 [/server example]
 
 [client example]
-hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo"}
+hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo", :room_count => 3}
 
 hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').create(hotel.to_xml(:root => "hotel"))
 
@@ -109,9 +111,50 @@ hotel = Restfulie.at('http://localhost:30000/hotels/1').get
 puts "Hotel created at #{hotel.web_response['Content-type']}"
 [/client example]
 
+[box]
+You can remove both new and create methods from your HotelsController as they are not needed.
+[/box]
+
 [section Data structures in the client]
 
+The previous example demonstrates how our client code can be written detached from the resource model or server side model: there was no need to create a Hotel representation on the client side end to
+make things work.
 
+What would happen if the server wants to evolve its model with new fields?
+
+[code]
+script/generate migration add_hotel_rate
+[/code]
+
+And enter the new *rate* field
+
+[code]
+class AddHotelRate < ActiveRecord::Migration
+  def self.up
+    add_column :hotels, :rate, :integer
+    Hotel.all.each do |h|
+      h.rate = 3
+      h.save
+    end
+  end
+
+  def self.down
+    remove_column :hotels, :rate
+  end
+end
+[/code]
+
+Finally, run your database migration:
+
+[code]
+rake db:migrate
+[/code]
+
+[box important]
+The server side can evolve its model without affecting running clients. REST client frameworks
+should be written in a way that allows servers to evolve its model content without affecting the client.
+This behaviour is called forward-compatibility and is implemented in Restfulie through the use of dynamic generated methods that allow access to the new unexpected content.
+[/box important]
 
 [section Daily tours]
 
