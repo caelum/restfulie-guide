@@ -150,6 +150,15 @@ Finally, run your database migration:
 rake db:migrate
 [/code]
 
+Clients which are unaware of that new information available in the resource still work.
+Meanwhile, new or modified clients can make use of that available information:
+
+[code]
+hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo", :room_count => 3, :rate => 4}
+hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').create(hotel.to_xml(:root => "hotel"))
+puts "Rated: #{hotel.rate}"
+[/code]
+
 [box important]
 The server side can evolve its model without affecting running clients. REST client frameworks
 should be written in a way that allows servers to evolve its model content without affecting the client.
