@@ -1,0 +1,124 @@
+Our first iteration while developing the systems includes the following functionalities:
+
+- be able to create cities and hotels
+
+Creating cities
+
+There are two HTTP verbs that allows us to create resources on the server side.
+In order to create cities we will use the most famous solution: sending a POST request to /city.
+First we need to receive the POST data and transform it into our domain data. Once the client defined the mime-type and the server configured which classes represents each media types, it can easily be achieved as:
+
+[server code]
+rails hotel-system
+cd hotel-system
+script/generate scaffold hotel name:string city:string room_count:integer
+[/server code]
+
+We then configure restfulie at **enviroment.rb**:
+
+[code]
+config.gem "restfulie", :version => ">= 0.5.0"
+[/code]
+
+And configure **development.rb** to ignore its sequential protection feature:
+
+[code]
+config.action_controller.allow_forgery_protection    = false
+[/code]
+
+[section Configuring the model]
+
+[server example]
+class Hotel < ActiveRecord
+	acts_as_restfulie
+	content_type "vnd/hotel+xml", "vnd/hotel+json"
+end
+[/server example]
+
+The 1-1 mapping between our domain model and resources might not be the best solution, and we will see later how to map resources in other ways to our domain.
+
+If the result was a success, the POST method should return the resource location and a 201 Created response, allowing the client to retrieve the resource data if required.
+
+[server example]
+location= url_for resource
+render_resource resource, options, {:status => :created, :location => location}
+[/server example]
+
+This code will generate a response 201 with the resource location in the "Location" header.
+
+The entire code for the server controller would check if the save process was successful and react accordingly: rendering the error messages if something failed.
+
+[TODO check unprocessable entity is a valid response? and its body?]
+
+[server example]
+class HotelsController < ApplicationController::Base
+	def create
+	    @hotel = Restfulie.from request
+	    if @hotel.save
+	      render_created @city
+	    else
+	      render :xml => @city.errors, :status => :unprocessable_entity
+	    end
+	end
+end
+[/server example]
+
+If the server wants to avoid one extra request-response trip, it can return the resource content with the XXX return code and the client will not need another request to retrieve this information.
+
+Note that render_created will already do it for us, returning a response as:
+
+[box]
+There is one major validation step missing in the code above: the object created invoking *Restfulie.from* might not be a hotel and we are not checking its content-type. In order to check it if the request media-type matches the expected one:
+
+[code]
+	valid = Restfulie::MediaType.supports?(content_type) &&
+        	Restfulie::MediaType.media_type(content_type) == Hotel
+[/code]
+[/box]
+
+[section Default behaviour]
+
+As creating through POST, saving it to the database and responding with a 201 is the typical behaviour for REST systems.
+
+Once your controller includes the RestController module, there is no need to define the create method unless you want to change its behaviour:
+
+[server example]
+class HotelsController < ApplicationController
+  include Restfulie::Server::RestController
+
+	# implicit declarated the create method
+	# including media-type checking
+
+end
+[/server example]
+
+[client example]
+hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo"}
+
+hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').create(hotel.to_xml(:root => "hotel"))
+
+puts "Response was #{hotel.web_response}"
+[/client example]
+
+[section Accessing headers and the response itself]
+
+Sometimes the clients want to access the http response information itself and you can do it with Restfulie through the web_response method which is the Net::HTTPResponse object itself:
+
+[client example]
+hotel = Restfulie.at('http://localhost:30000/hotels/1').get
+puts "Hotel created at #{hotel.web_response['Content-type']}"
+[/client example]
+
+[section Data structures in the client]
+
+
+
+[section Daily tours]
+
+
+
+
+
+[section Error responses]
+
+[section When 1-1 is not possible]
