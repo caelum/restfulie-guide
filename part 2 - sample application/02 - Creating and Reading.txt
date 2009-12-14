@@ -165,12 +165,21 @@ should be written in a way that allows servers to evolve its model content witho
 This behaviour is called forward-compatibility and is implemented in Restfulie through the use of dynamic generated methods that allow access to the new unexpected content.
 [/box important]
 
-[section Daily tours]
+[section Retrieving a resource]
 
+- Most of the web request [need reference] is based on data retrieval correctly using the GET verb.
+- Content type negotiation: if the existing resource can be represented in that media-type, gives it
+- Restfulie knows how to transform to xml and json by default
 
+DO IT DO IT DO IT DO IT:
+- Otherwise, complain
 
+describe it!!!!
 
+[section Retrieving a list of resources]
 
-[section Error responses]
+- works in the same way
 
-[section When 1-1 is not possible]
+[section Searching through a list of resources]
+
+[section Saving a search: creating a report]
