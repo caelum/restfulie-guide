@@ -1,8 +1,8 @@
 Our first iteration while developing the systems includes the following functionalities:
 
-- be able to create cities and hotels
+- be able to create hotels
 
-Creating cities
+Creating hotels
 
 There are two HTTP verbs that allows us to create resources on the server side.
 In order to create cities we will use the most famous solution: sending a POST request to /city.
@@ -115,7 +115,16 @@ puts "Hotel created at #{hotel.web_response['Content-type']}"
 You can remove both new and create methods from your HotelsController as they are not needed.
 [/box]
 
-[section Data structures in the client]
+
+
+
+
+
+
+
+
+
+[section Evolving the server]
 
 The previous example demonstrates how our client code can be written detached from the resource model or server side model: there was no need to create a Hotel representation on the client side end to
 make things work.
@@ -165,21 +174,145 @@ should be written in a way that allows servers to evolve its model content witho
 This behaviour is called forward-compatibility and is implemented in Restfulie through the use of dynamic generated methods that allow access to the new unexpected content.
 [/box important]
 
-[section Retrieving a resource]
+
+
+
+
+
+
+
+[section Mapping responses to our domain]
+
+In most cases we want to map resource access responses to our domain models, so in our case we want to create a class
+which represents a Hotel in the client side:
+
+[code]
+class Hotel < ActiveRecord::Base
+	uses_restfulie
+end
+[/code]
+
+And now we can read it from a specific URI:
+
+[code]
+hotel = Hotel.from_web 'http://localhost:3000/hotels/1'
+puts "Hotel #{hotel.name} retrieved"
+[/code]
+
+[TODO section error retrieval]
+
+[section Content type]
 
 - Most of the web request [need reference] is based on data retrieval correctly using the GET verb.
 - Content type negotiation: if the existing resource can be represented in that media-type, gives it
 - Restfulie knows how to transform to xml and json by default
-
-DO IT DO IT DO IT DO IT:
 - Otherwise, complain
 
-describe it!!!!
 
 [section Retrieving a list of resources]
 
+The entry point to an application can be a list of available resources of an specific type.
+In our hotel book management system, the entry point will be a choice of available hotels.
+
+In the server side, one can render the list of hotels as a resource:
+
+[code]
+def index
+  @hotels = Hotel.all
+  render_resource @hotels
+end
+[/code]
+
+And a request to this URI accepting xml as its return will give back a list of hotels:
+
+[code]
+GET /hotels
+Accept: application/xml
+[/code]
+[code]
+<?xml version="1.0" encoding="UTF-8"?>
+<hotels>
+  <hotel>
+    <city>Sao Paulo</city>
+    <created-at>2009-12-13T22:44:09Z</created-at>
+    <id>1</id>
+    <name>Caelum Objects Hotel</name>
+    <rate>4</rate>
+    <room-count>3</room-count>
+    <updated-at>2009-12-13T22:44:09Z</updated-at>
+  </hotel>
+  <hotel>
+    <city>Sao Paulo</city>
+    <created-at>2009-12-13T22:44:21Z</created-at>
+    <id>2</id>
+    <name>Some Other Hotel</name>
+    <rate>4</rate>
+    <room-count>3</room-count>
+    <updated-at>2009-12-13T22:44:21Z</updated-at>
+  </hotel>
+</hotels>
+[code]
+
+The <b>render_resource</b> method will handle content type negotiation but by creating a resource which reflects state from other resources - the hotels themselves - we loose some visibility: a change to the second hotel will also affect the list resource.
+
+[note anyways a delete will always affect the list, how bad is it really?]
+
+Another approach to creating a list of resources is to let hypermedia drive our client application and represent the list of resources as connected resources to this collection.
+
+Typical formats that allow representations with hypermedia support are application/xhtml with our own microformat:
+
+[note note that in xhtml with a table and content, there is still the duplication issue... otherwise the table is just dumb!]
+
+[code]
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+<body>
+	<table class="hotels">
+		<tr id="1">
+			<td>Sao Paulo</td>
+    <td>2009-12-13T22:44:09Z</created-at>
+    <td>Caelum Objects Hotel</name>
+    <td>4</td>
+    <td>3</td>
+    <td>2009-12-13T22:44:09Z</td>
+  </hotel>
+  <hotel>
+    <city>Sao Paulo</city>
+    <created-at>2009-12-13T22:44:21Z</created-at>
+    <id>2</id>
+    <name>Some Other Hotel</name>
+    <rate>4</rate>
+    <room-count>3</room-count>
+    <updated-at>2009-12-13T22:44:21Z</updated-at>
+  </hotel>
+</hotels>
+[/code]
+
+
+
+
+
+
+
+
+
+
+[section Retrieve as xhtml]
+
+
+[section Retrieve as an atom feed]
+
 - works in the same way
 
-[section Searching through a list of resources]
 
-[section Saving a search: creating a report]
+
+
+[section Create cities]
+
+
+
+[section Creating flight routes]
+
+[section Server side resource <-> code mapping]
+
+[section Client side resource <-> domain mapping]

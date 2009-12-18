@@ -1,9 +1,0 @@
-[section Daily tours]
-
-The hotel system is also capable of selling daily tours, therefore we need to create the same register and retrieval support.
-
-
-
-[section Error responses]
-
-[section When 1-1 is not possible]
