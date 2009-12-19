@@ -31,11 +31,11 @@ end
 A valid representation of our hotel is:
 
 <pre>
-	<hotel>
-		<name>Caelum Objects Hotel</name>
-		<room_count>220</roomt_count>
-		<city>Sao Paulo</city>
-	</hotel>
+<hotel>
+	<name>Caelum Objects Hotel</name>
+	<room_count>220</roomt_count>
+	<city>Sao Paulo</city>
+</hotel>
 </pre>
 
 The 1-1 mapping between our domain model and resources might not be the best solution, and we will see later how to map resources in other ways to our domain.
@@ -44,11 +44,11 @@ h2. Creating hotels
 
 Once the client defined the mime-type and the server configured which classes represents each media types, we can focus on acting with our resources.
 
-There are two HTTP verbs that allows us to create resources on the server side. In order to create hotels we will use the most widely used solution: sending a POST request to /hotels.
+There are two HTTP verbs that allows us to create resources on the server side. In order to create hotels we will use the most widely used solution: sending a **post** request to /hotels.
 
-First we need to receive the POST data (the resource representation) and transform it into our domain data. 
+First we need to receive the **post** data (the resource representation) and transform it into our domain data. 
 
-If the result was a success, the POST method should return the resource location and a **201 Created** response, allowing the client to retrieve the resource data if required.
+If the result was a success, the **post** method should return the resource location and a **201 Created** response, allowing the client to retrieve the resource data if required.
 
 <pre>
 location = url_for resource
@@ -57,9 +57,9 @@ render_resource resource, options, {:status => :created, :location => location}
 
 This code will generate a response 201 with the resource location in the **Location** header.
 
-The entire code for the server controller would check if the save process was successful and react accordingly: rendering the error messages if something failed.
+The controller still needs to check if the process was successfully completed or not and, if something goes wrong, render the related error messages.
 
-[TODO check unprocessable entity is a valid response? and its body?]
+<blockquote>TODO check unprocessable entity is a valid response? and its body?</blockquote>
 
 <pre>
 class HotelsController < ApplicationController::Base
@@ -74,26 +74,28 @@ class HotelsController < ApplicationController::Base
 end
 </pre>
 
+<blockquote>TODO image with both paths: everything ok, something wrong, show representation on image</blockquote>
+
 If the server wants to avoid one extra request-response trip, it can return the resource content with the XXX return code and the client will not need another request to retrieve this information.
 
 Note that render_created will already do it for us, returning a response as:
 
-[box]
-There is one major validation step missing in the code above: the object created invoking *Restfulie.from* might not be a hotel and we are not checking its content-type. In order to check it if the request media-type matches the expected one:
+<blockquote>
+There is one major validation step missing in the code above: the object created invoking *Restfulie.from* might not be a hotel and we are not checking its content-type. In order to check if the media-type sent matches the expected one:
 
-[code]
-	valid = Restfulie::MediaType.supports?(request.headers['CONTENT_TYPE']) &&
-        	Restfulie::MediaType.media_type(request.headers['CONTENT_TYPE']) == Hotel
-[/code]
-[/box]
+<pre>
+valid = Restfulie::MediaType.supports?(request.headers['CONTENT_TYPE']) &&
+       	Restfulie::MediaType.media_type(request.headers['CONTENT_TYPE']) == Hotel
+</pre>
+</blockquote>
 
-[section Default behaviour]
+h2. Default behaviour
 
-As creating through POST, saving it to the database and responding with a 201 is the typical behaviour for REST systems.
+The typical behaviour for CRUD systems following REST is to create resources through **post** by translating the resource to domain models, saving them to the database and responding with a 201.
 
-Once your controller includes the RestController module, there is no need to define the create method unless you want to change its behaviour:
+When using Restfulie, those common cases are supported by default if your controller includes the **RestController** module, which includes the behaviour displayed so far:
 
-[server example]
+<pre>
 class HotelsController < ApplicationController
   include Restfulie::Server::RestController
 
@@ -101,28 +103,30 @@ class HotelsController < ApplicationController
 	# including media-type checking
 
 end
-[/server example]
+</pre>
 
-[client example]
+<blockquote>TODO describe client, move client code up?</blockquote>
+
+<pre>
 hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo", :room_count => 3}
 
 hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').create(hotel.to_xml(:root => "hotel"))
 
 puts "Response was #{hotel.web_response}"
-[/client example]
+</pre>
 
-[section Accessing headers and the response itself]
+h2. Accessing headers and the response itself
 
 Sometimes the clients want to access the http response information itself and you can do it with Restfulie through the web_response method which is the Net::HTTPResponse object itself:
 
-[client example]
+<pre>
 hotel = Restfulie.at('http://localhost:30000/hotels/1').get
 puts "Hotel created at #{hotel.web_response['Content-type']}"
-[/client example]
+</pre>
 
-[box]
+<blockquote>
 You can remove both new and create methods from your HotelsController as they are not needed.
-[/box]
+</blockquote>
 
 
 
@@ -133,20 +137,20 @@ You can remove both new and create methods from your HotelsController as they ar
 
 
 
-[section Evolving the server]
+h2. Evolving the server
 
 The previous example demonstrates how our client code can be written detached from the resource model or server side model: there was no need to create a Hotel representation on the client side end to
 make things work.
 
 What would happen if the server wants to evolve its model with new fields?
 
-[code]
+<pre>
 script/generate migration add_hotel_rate
-[/code]
+</pre>
 
 And enter the new *rate* field
 
-[code]
+<pre>
 class AddHotelRate < ActiveRecord::Migration
   def self.up
     add_column :hotels, :rate, :integer
@@ -160,22 +164,22 @@ class AddHotelRate < ActiveRecord::Migration
     remove_column :hotels, :rate
   end
 end
-[/code]
+</pre>
 
 Finally, run your database migration:
 
-[code]
+<pre>
 rake db:migrate
-[/code]
+</pre>
 
 Clients which are unaware of that new information available in the resource still work.
 Meanwhile, new or modified clients can make use of that available information:
 
-[code]
+<pre>
 hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo", :room_count => 3, :rate => 4}
 hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').create(hotel.to_xml(:root => "hotel"))
 puts "Rated: #{hotel.rate}"
-[/code]
+</pre>
 
 [box important]
 The server side can evolve its model without affecting running clients. REST client frameworks
@@ -190,55 +194,58 @@ This behaviour is called forward-compatibility and is implemented in Restfulie t
 
 
 
-[section Mapping responses to our domain]
+h2. Mapping responses to our domain
 
 In most cases we want to map resource access responses to our domain models, so in our case we want to create a class
 which represents a Hotel in the client side:
 
-[code]
+<pre>
 class Hotel < ActiveRecord::Base
 	uses_restfulie
 end
-[/code]
+</pre>
 
 And now we can read it from a specific URI:
 
-[code]
+<pre>
 hotel = Hotel.from_web 'http://localhost:3000/hotels/1'
 puts "Hotel #{hotel.name} retrieved"
-[/code]
+</pre>
 
-[TODO section error retrieval]
 
-[section Content type]
+h2. Content type
 
+<blockquote>
+TODO
 - Most of the web request [need reference] is based on data retrieval correctly using the GET verb.
 - Content type negotiation: if the existing resource can be represented in that media-type, gives it
 - Restfulie knows how to transform to xml and json by default
 - Otherwise, complain
+</blockquote>
 
+h2. Retrieving a list of resources
 
-[section Retrieving a list of resources]
+<blockquote>TODO show how to do it with hotels... then with ATOM</blockquote>
 
 The entry point to an application can be a list of available resources of an specific type.
 In our hotel book management system, the entry point will be a choice of available hotels.
 
 In the server side, one can render the list of hotels as a resource:
 
-[code]
+<pre>
 def index
   @hotels = Hotel.all
   render_resource @hotels
 end
-[/code]
+</pre>
 
 And a request to this URI accepting xml as its return will give back a list of hotels:
 
-[code]
+<pre>
 GET /hotels
 Accept: application/xml
-[/code]
-[code]
+</pre>
+<pre>
 <?xml version="1.0" encoding="UTF-8"?>
 <hotels>
   <hotel>
@@ -260,7 +267,7 @@ Accept: application/xml
     <updated-at>2009-12-13T22:44:21Z</updated-at>
   </hotel>
 </hotels>
-[code]
+<pre>
 
 The <b>render_resource</b> method will handle content type negotiation but by creating a resource which reflects state from other resources - the hotels themselves - we loose some visibility: a change to the second hotel will also affect the list resource.
 
@@ -272,7 +279,7 @@ Typical formats that allow representations with hypermedia support are applicati
 
 [note note that in xhtml with a table and content, there is still the duplication issue... otherwise the table is just dumb!]
 
-[code]
+<pre>
 <?xml version="1.0" encoding="UTF-8"?>
 <html>
 <body>
@@ -295,15 +302,15 @@ Typical formats that allow representations with hypermedia support are applicati
     <updated-at>2009-12-13T22:44:21Z</updated-at>
   </hotel>
 </hotels>
-[/code]
+</pre>
 
 [section Retrieve as an atom feed]
 
 - works in the same way
 
-[code]
+<pre>
 	server side code to generate the above mentioned code
-[/code]
+</pre>
 
 
 [section Create cities]
