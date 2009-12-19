@@ -223,14 +223,27 @@ TODO
 - Otherwise, complain
 </blockquote>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 h2. Retrieving a list of resources
 
 <blockquote>TODO show how to do it with hotels... then with ATOM</blockquote>
 
-The entry point to an application can be a list of available resources of an specific type.
-In our hotel book management system, the entry point will be a choice of available hotels.
-
-In the server side, one can render the list of hotels as a resource:
+Either the entry point to an application can be a list of available resources of an specific type or at some point our client ends up retrieving a list of resources.
+In our hotel book management system, the entry point will be a choice of available hotels, so in the server side, one can render the list of hotels as a resource:
 
 <pre>
 def index
@@ -245,6 +258,7 @@ And a request to this URI accepting xml as its return will give back a list of h
 GET /hotels
 Accept: application/xml
 </pre>
+
 <pre>
 <?xml version="1.0" encoding="UTF-8"?>
 <hotels>
@@ -267,7 +281,7 @@ Accept: application/xml
     <updated-at>2009-12-13T22:44:21Z</updated-at>
   </hotel>
 </hotels>
-<pre>
+</pre>
 
 The <b>render_resource</b> method will handle content type negotiation but by creating a resource which reflects state from other resources - the hotels themselves - we loose some visibility: a change to the second hotel will also affect the list resource.
 
