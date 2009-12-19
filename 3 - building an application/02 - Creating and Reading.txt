@@ -1,3 +1,12 @@
+
+
+
+
+
+
+
+
+
 Our first iteration while developing the systems includes the following functionalities:
 
 - be able to create hotels
@@ -288,21 +297,20 @@ Typical formats that allow representations with hypermedia support are applicati
 </hotels>
 [/code]
 
-
-
-
-
-
-
-
-
-
 [section Retrieve as xhtml]
+
+[code]
+	server side code to generate the above mentioned code
+[/code]
 
 
 [section Retrieve as an atom feed]
 
 - works in the same way
+
+[code]
+	server side code to generate the above mentioned code
+[/code]
 
 
 

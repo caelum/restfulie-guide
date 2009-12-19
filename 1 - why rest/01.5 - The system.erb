@@ -1,0 +1,38 @@
+<h2>The system</h2>
+
+Our system will allow clients to book hotels and flights using a RESTful API.
+Using REST will imply in a set of constraints which we have to work with in order to obtain the advantages mentioned by Roy Fielding in his dissertation [cite].
+
+<h2>The clients</h2>
+
+Our systems is composed by two different client APIs, one allows ourselves to add hotels to the system:
+
+<pre>
+hotels = Restfulie.at(HOTELS_ENTRY).get
+hotels.add new_hotel
+</pre>
+
+Using the basic REST constraints over HTTP, a POST request sent when invoking <i>hotels.add</i> is enough to implement the above example.
+
+Unfortunately that will not be enough for the second set of clients, that want to book both hotels and flights together:
+
+<pre>
+hotels = Restfulie.at(HOTELS_ENTRY).get
+hotel = hotels.at('Sao Paulo').rated(4).sort_by(:price).first
+flight = hotel.city.to('London').at(December.05.2010).first
+booking = Restfulie.at(BOOKING_ENTRY).post
+booking.hotels.add hotel
+booking.flights.add flight
+confirmation = booking.pay payment
+</pre>
+
+This code is a much richer and powerful example as it uses hypermedia to guide the client through a set of resources, finally finding the requested information as in <i>hotels.at('Sao Paulo').rated(4).sort_by(:price).first</i>
+
+Later, there is an atomic execution which involves more than one request:
+<pre>
+	booking.hotels.add hotel
+	booking.flights.add flight
+	confirmation = booking.pay payment
+</pre>
+
+All this code will be possible to execute once our system is complete.

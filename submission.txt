@@ -1,0 +1,82 @@
+An overview of your proposed book.
+
+Based on Jim Webber, Savas and Ian Ronbinson's upcoming book "", which focuses on describing the characteristics and options for REST solutions, "Practical REST with Restfulie" follows "Agile Web Development With Ruby on Rails", teaching the reader how to implement the most required or discussed features of web applications integration using all REST constraints.
+
+While some frameworks and books have missed the hypermedia constraint so far, this book will show how it solves questions that were so far only discussed as REST "transactions" or 2-phase commit solutions, and other solutions for typical problems which benefit from every REST characteristic as content-negotiation, loose coupling and higher levels of scalability.
+
+Hypermedia was much talked lately due to Atom strength but there is no book so far which leverages its usage in every way mentioned by Roy Fielding - the creator of REST.
+
+Those who have read other Rest related book will find this extra level of information related to hypermedia and how it helps on everything they read so far in practice.
+Others who are used to web services using SOAP and WS-stacks will see a different implementation the benefits that REST promissed in Roy's thesis.
+
+Finally, those looking for a new architectural style and willing to read a more hands-on material, will have a chance to jump straight into a system which follows the REST architectural style.
+
+There is no book so far showing the power of hypermedia, no book has shown its advantages in practice, turning out to be an opportunity to create what could become a reference on how to implement REST systems and see its advantages.
+
+Following 'Agile Web Development With Ruby on Rails' path, the book will be divided in 4 parts, but there is one big difference: code will be first shown as 'what I would like to be able to accomplish' and 'what is my desired behaviour when I execute this code', and then together with the reader, create the code that results in our application.
+
+It sounds as Behaviour Driven Development but the desired code will (might be) not be a test, but a guideline to let the reader understand exactly what we want to do.
+
+1. Why REST
+A short introduction on what are REST benefits and what we want to achieve so we can get our readers interested in the upcoming material
+
+2. Getting started
+2.1 - Configuring the rails server
+Will guide the reader while installing rails, creating a blank project and configuring it with Restfulie
+
+2.2 - Configuring the ruby client
+Will guide the reader on how to create a ruby application using Restfulie's gem on the client side.
+
+3. Building an application
+3.1 - The travel agency system
+Describes what our application will have to achieve by the end of the third section. There is a set of features to be implemented through out the book.
+
+3.2 - Basic operations with Hotels
+This chapter describes how to create CRUD operations with a resource.
+
+3.3 - Handling errors
+Will show how to handle the typical errors that might occur in your server, according to its response code, and which decisions can be taken for each one of them.
+
+3.4 - Searching
+Shows how hypermedia leverages searches in our application in the same way current web applications have implemented such features.
+
+3.5 - Tests
+This chapter might either fit here or at the end of the book - with the appendices - showing how to create tests and a (possibly) a mocking system for integrated solutions using REST.
+
+3.6 - Booking your trip
+Explains how to create a booking system for both hotels and flights in a multiple request process. This allows booking cancelation if one of the expected resources state has changed i.e. a hotel became full while you were booking it.
+
+3.7 - Transactions
+This is a short chapter only to remind the readers that transactions are usually not semantically connected to our systems therefore the booking process described on the previous chapter is exactly the transaction pattern we were looking to execute.
+
+3.8 - Evolution: booking houses
+One of the main issues on long-term software maintenance is that servers evolve in order to provide extra information and features to new clients. In strong coupled systems this is difficult to achieve: new information and features will be added to the server and all client code will continue working.
+
+3.9 - Scaling our system
+Although not yet sure whether this chapter is a good idea, system performance would be measured with the existing code base and cache proxies inserted between the server and several clients. After that, performance is measured again and compared with the previous information. This chapter will show the user how information retrieval systems benefit in scalability and performance by following the REST architectural style.
+
+3.10 - Security
+This chapter will describe how to authenticate a client using tokens and how to protect part of the system.
+
+4. Restfulie
+This section presents part of the API.
+
+4.1. - Actions and Resources
+Our mind is used to think of invocations and this chapter provides simple guide lines on how to translate this kind of thought into  semantically meaningful resources.
+
+4.2 - Client side
+A big part of this API has already been shown and explained in previous chapters, this one will comment on functionalities not shown previously.
+
+4.3 - Media-types
+API examples on how different media types could be supported within the application.
+
+4.4 - Related resources
+Presents other alternatives to connect resources. This chapter is connected with the previous one as relation between resources are described through hyperlinks according to different media-types.
+
+5. Appendices
+5.1 - Source code
+The entire source code for the final application
+
+5.2 - Test
+The test chapter from section 3 might be included here.
+

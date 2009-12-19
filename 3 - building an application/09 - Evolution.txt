@@ -1,0 +1,3 @@
+
+
+[section now houses can be rented and its a different content type... the client ignores those media types and we are happy forever]
