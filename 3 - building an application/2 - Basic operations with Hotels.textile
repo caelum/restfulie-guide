@@ -1,20 +1,13 @@
+h1. Basic resource operations
 
+This chapter will introduce how to use the basic HTTP verbs to create, remove and retrieve a resource or a resource collection.
+This use of the HTTP verbs has been widely adopted although with a few modifications from the HTTP specification due to some PUT
+restrictions.
 
-
-
-
-
-
-
-
-Our first iteration while developing the systems includes the following functionalities:
-
-- be able to create hotels
-
-Creating hotels
+h2. Creating hotels
 
 There are two HTTP verbs that allows us to create resources on the server side.
-In order to create cities we will use the most famous solution: sending a POST request to /city.
+In order to create hotels we will use the most famous solution: sending a POST request to /city.
 First we need to receive the POST data and transform it into our domain data. Once the client defined the mime-type and the server configured which classes represents each media types, it can easily be achieved as:
 
 [server code]
@@ -297,13 +290,6 @@ Typical formats that allow representations with hypermedia support are applicati
 </hotels>
 [/code]
 
-[section Retrieve as xhtml]
-
-[code]
-	server side code to generate the above mentioned code
-[/code]
-
-
 [section Retrieve as an atom feed]
 
 - works in the same way
@@ -313,10 +299,14 @@ Typical formats that allow representations with hypermedia support are applicati
 [/code]
 
 
-
-
 [section Create cities]
 
+
+[section Updating cities]
+
+[section Updating hotels]
+
+[section Removing hotels]
 
 
 [section Creating flight routes]
