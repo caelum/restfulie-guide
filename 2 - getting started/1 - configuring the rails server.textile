@@ -1,0 +1,35 @@
+h1. Configuring the rails server
+
+h2. Creating a new project
+
+[TODO explain]
+
+<pre>
+rails hotel-system
+cd hotel-system
+</pre>
+
+[TODO configure gemcutter]
+
+We then configure restfulie at **hotel-system/config/enviroment.rb**:
+
+<pre>
+config.gem "restfulie", :version => ">= 0.5.0"
+</pre>
+
+And configure **hotel-system/config/enviroments/development.rb** to ignore its sequential protection feature:
+[TODO explain]
+
+<pre>
+config.action_controller.allow_forgery_protection    = false
+</pre>
+
+h2. Running the server
+
+[TODO explain]
+
+<pre>
+script/server
+</pre>
+
+Now we can access the hotel system by pointing our browser to **http://localhost:3000**.

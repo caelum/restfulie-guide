@@ -1,36 +1,24 @@
 h1. Basic resource operations
 
-This chapter will introduce how to use the basic HTTP verbs to create, remove and retrieve a resource or a resource collection.
+This chapter will introduce how to use the basic HTTP verbs to create, remove and retrieve a resource or a collection.
 This use of the HTTP verbs has been widely adopted although with a few modifications from the HTTP specification due to some PUT
 restrictions.
 
+Rails provides support for CRUD over HTTP verbs using request parameters instead of resource representations therefore Restfulie will allow the use of the later to deal with resources.
+
 h2. Creating hotels
 
-There are two HTTP verbs that allows us to create resources on the server side.
-In order to create hotels we will use the most famous solution: sending a POST request to /city.
-First we need to receive the POST data and transform it into our domain data. Once the client defined the mime-type and the server configured which classes represents each media types, it can easily be achieved as:
+There are two HTTP verbs that allows us to create resources on the server side. In order to create hotels we will use the most famous solution: sending a POST request to /hotels.
 
 [server code]
-rails hotel-system
-cd hotel-system
 script/generate scaffold hotel name:string city:string room_count:integer
 rake db:create:all
 rake db:migrate
 [/server code]
 
-We then configure restfulie at **enviroment.rb**:
-
-[code]
-config.gem "restfulie", :version => ">= 0.5.0"
-[/code]
-
-And configure **development.rb** to ignore its sequential protection feature:
-
-[code]
-config.action_controller.allow_forgery_protection    = false
-[/code]
-
 [section Configuring the model]
+
+First we need to receive the POST data (the resource representation) and transform it into our domain data. Once the client defined the mime-type and the server configured which classes represents each media types, it can easily be achieved as:
 
 [server example]
 class Hotel < ActiveRecord
