@@ -181,11 +181,11 @@ hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').
 puts "Rated: #{hotel.rate}"
 </pre>
 
-[box important]
+<blockquote>
 The server side can evolve its model without affecting running clients. REST client frameworks
 should be written in a way that allows servers to evolve its model content without affecting the client.
 This behaviour is called forward-compatibility and is implemented in Restfulie through the use of dynamic generated methods that allow access to the new unexpected content.
-[/box important]
+</blockquote>
 
 
 
@@ -240,8 +240,6 @@ TODO
 
 h2. Retrieving a list of resources
 
-<blockquote>TODO show how to do it with hotels... then with ATOM</blockquote>
-
 Either the entry point to an application can be a list of available resources of an specific type or at some point our client ends up retrieving a list of resources.
 In our hotel book management system, the entry point will be a choice of available hotels, so in the server side, one can render the list of hotels as a resource:
 
@@ -287,6 +285,27 @@ The *render_resource* method handled content negotiation and generated valid *ap
 
 By following this path of new media type creations, the project will end up with a custom media type for almost every possible request, making them useless for other systems and losing the ability to be understood by a larger number of clients.
 
+
+
+
+
+h2. Free caching and 304 support
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 h2. The hotel list Atom feed
 
 If we create an atom feed for our hotels, we are able to use a well-known and standard media type that other clients are already capable of understanding.
@@ -294,54 +313,53 @@ If we create an atom feed for our hotels, we are able to use a well-known and st
 An Atom feed representing the same response mentioned earlier would be:
 
 <pre>
-<?xml version="1.0"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-  <id>urn:uuid:d0b4f914-30e9-418c-8628-7d9b7815060f</id>
-  <title type="text">Hotels list</title>
-  <updated>2009-07-01T12:05:00Z</updated>
-  <generator uri="http://caelumtravel.com">Hotels Service</generator>
-  <link rel="self" href="http://caelumtravel.com/hotels"/>
-  <entry>
-    <id>urn:uuid:aa990d44-fce0-4823-a971-d23facc8d7c6</id>
-    <title type="text">hotel</title>
-    <updated>2009-07-01T11:58:00Z</updated>
-    <author>
-      <name>caelum travel</name>
-    </author>
-    <link rel="self" href="http://caelumtravel.com/hotels/1"/>
-    <content type="application/vnd.hotel+xml">
-      <hotel xmlns="http://caelumtravel.com/hotels/schema">
-	    <city>Sao Paulo</city>
-	    <created-at>2009-12-13T22:44:09Z</created-at>
-	    <id>1</id>
-	    <name>Caelum Objects Hotel</name>
-	    <rate>4</rate>
-	    <room-count>3</room-count>
-	    <updated-at>2009-12-13T22:44:09Z</updated-at>
-	  </hotel>
-    </content>
-  </entry>
-  <entry>
-    <id>urn:uuid:6fa8eca3-48ee-44a9-a899-37d047a3c5f2</id>
-    <title type="text">order</title>
-    <updated>2009-07-01T11:25:00Z</updated>
-    <author>
-      <name>caelum travel</name>
-    </author>
-    <link rel="self" href="http://caelumtravel.com/hotels/2"/>
-    <content type="application/vnd.hotel+xml">
-	  <hotel xmlns="http://caelumtravel.com/hotels/schema">
-	    <city>Sao Paulo</city>
-	    <created-at>2009-12-13T22:44:21Z</created-at>
-	    <id>2</id>
-	    <name>Some Other Hotel</name>
-	    <rate>4</rate>
-	    <room-count>3</room-count>
-	    <updated-at>2009-12-13T22:44:21Z</updated-at>
-	  </hotel>
-    </content>
-  </entry>
-</feed></pre>
+	<?xml version="1.0"?>
+	      <feed xmlns="http://www.w3.org/2005/Atom">
+	        <id>http://localhost:3000/hotels</id>
+	        <title type="text">Hotels</title>
+	        <updated>2009-12-21T00:22:24-08:00</updated>
+	        <author><name>Hotels</name></author>
+	        <link rel="self" href="http://localhost:3000/hotels"/>
+	                  <entry>
+	            <id>http://localhost:3000/hotels/1</id>
+	            <title type="text">Hotel</title>
+	            <updated>2009-12-13T22:44:09-08:00</updated>
+	            <link rel="self" href="http://localhost:3000/hotels/1"/>
+	            <content type="vnd/caelum_hotel+xml">
+	              <hotel>
+	  <city>Sao Paulo</city>
+	  <created-at>2009-12-13T22:44:09Z</created-at>
+	  <id>1</id>
+	  <name>Caelum Objects Hotel</name>
+	  <rate>4</rate>
+	  <room-count>3</room-count>
+	  <updated-at>2009-12-13T22:44:09Z</updated-at>
+
+	</hotel>
+
+	            </content>
+	          </entry>
+	          <entry>
+	            <id>http://localhost:3000/hotels/2</id>
+	            <title type="text">Hotel</title>
+	            <updated>2009-12-13T22:44:21-08:00</updated>
+	            <link rel="self" href="http://localhost:3000/hotels/2"/>
+	            <content type="vnd/caelum_hotel+xml">
+	              <hotel>
+	  <city>Sao Paulo</city>
+	  <created-at>2009-12-13T22:44:21Z</created-at>
+	  <id>2</id>
+	  <name>Caelum Objects Hotel</name>
+	  <rate>4</rate>
+	  <room-count>3</room-count>
+	  <updated-at>2009-12-13T22:44:21Z</updated-at>
+
+	</hotel>
+
+	            </content>
+	          </entry>
+	</feed>
+</pre>
 
 h2. Hypermedia in our resource list
 
