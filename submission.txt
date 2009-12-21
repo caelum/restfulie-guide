@@ -1,6 +1,6 @@
 An overview of your proposed book.
 
-Based on Jim Webber, Savas and Ian Ronbinson's upcoming book "", which focuses on describing the characteristics and options for REST solutions, "Practical REST with Restfulie" follows "Agile Web Development With Ruby on Rails", teaching the reader how to implement the most required or discussed features of web applications integration using all REST constraints.
+Based on Jim Webber, Savas and Ian Ronbinson's upcoming book "", which focuses on describing the characteristics and options for REST solutions, "Quit pretending: Practical REST with Restfulie" follows "Agile Web Development With Ruby on Rails", teaching the reader how to implement the most required or discussed features of web applications integration using all REST constraints.
 
 While some frameworks and books have missed the hypermedia constraint so far, this book will show how it solves questions that were so far only discussed as REST "transactions" or 2-phase commit solutions, and other solutions for typical problems which benefit from every REST characteristic as content-negotiation, loose coupling and higher levels of scalability.
 
@@ -80,3 +80,36 @@ The entire source code for the final application
 5.2 - Test
 The test chapter from section 3 might be included here.
 
+Competing Books
+
+There were a few books commented earlier, and there is an upcoming book from Subbu, called RESTful Web Services Cookbook. It contains a series of recipes with positive and negative points on each solution and seems to complement Jim's current book and our Practical REST book: Subbu's book is focused on positive and negative points, but not on the implementation itself. Our book guides the reader through an entire application, while his go through code samples.
+Leonard Richardson and Sam Ruby's RESTful Web Services contains a short description on web services, REST, his definition of Rest Oriented Architecture (ROA) and an example application using it. Unfortunately their sample application relates to a google map alike application with not so many easy comparisons with software that every other reader will write in their every day life. They did make a huge step forward but still a little bit missing on the Hypermedia part (as Roy Fielding later commented at Sam's blog).
+
+There is Bill Burke's upcoming book - I don't know which publisher - which will focus on RestEasy and JBoss REST-* idea. The idea was highly criticized by the community. RESTEasy is based on JAX-RS specification and - according to the authors - they did not do a good job on the Hypermedia part. Therefore, although Bill's book might have a similar approach to ours in a near future, it will surely have to face the lack of default hypermedia support on JAX-RS and RESTEasy's client API. As a last note, we still do not know if his book will be "implement an entire application" approach or an API reference guide.
+
+
+Market information
+
+While looking for some graphics on people searching for REST information on the web, we have created a post which, based on Google Insight comparisons, shows REST being the only alternative amongst soa, ejb, corba and itself that has a higher search increase rate compared to the increase rate of programming topics in general.
+
+This, and other graphics, can be found at http://guilhermesilveira.wordpress.com/2009/12/21/when-should-i-start-a-rest-initiative/ and show how rest related material is being needed more and more.
+
+Software developers and architects are the main audience: while architects will benefit from understand REST advantages in practice, developers are able to copy ideas straight into their projects.
+
+Promotional Ideas
+
+Jim Webber, together with Ian Robinson, is a well known Thoughtworker and ...?
+Savas, who has written the book with them, is well known at Microsoft and highly influencial in the same area.
+Guilherme Silveira runs the brazilian largest java community (guj.com.br) with 2 million page views a month, and is responsible for Caelum's training's material. Caelum is a (2009) 60 employee company in Brazil focused on Development and Agile training and will adopt the book as the main material for its REST training.
+At the same time, Restfulie will use the book as its how-to guide.
+???????? need some ideas here ????????
+
+Bio
+Guilherme Silveira is the technical leader at Caelum, taking part on architectural decisions with consulting clients, and also responsible for the training technical contents. He has worked at a few open source projects, created Restfulie for Java and Ruby, VRaptor and commited to XStream and other projects....?????
+
+Jim Webber is ...
+
+20 page writing sample
+
+	github chapter 3.1 and 3.2
+	

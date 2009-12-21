@@ -313,20 +313,20 @@ If we create an atom feed for our hotels, we are able to use a well-known and st
 An Atom feed representing the same response mentioned earlier would be:
 
 <pre>
-	<?xml version="1.0"?>
-	      <feed xmlns="http://www.w3.org/2005/Atom">
-	        <id>http://localhost:3000/hotels</id>
-	        <title type="text">Hotels</title>
-	        <updated>2009-12-21T00:22:24-08:00</updated>
-	        <author><name>Hotels</name></author>
-	        <link rel="self" href="http://localhost:3000/hotels"/>
-	                  <entry>
-	            <id>http://localhost:3000/hotels/1</id>
-	            <title type="text">Hotel</title>
-	            <updated>2009-12-13T22:44:09-08:00</updated>
-	            <link rel="self" href="http://localhost:3000/hotels/1"/>
-	            <content type="vnd/caelum_hotel+xml">
-	              <hotel>
+<?xml version="1.0"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<id>http://localhost:3000/hotels</id>
+		<title type="text">Hotels</title>
+		<updated>2009-12-21T00:22:24-08:00</updated>
+    <author><name>Hotels</name></author>
+    <link rel="self" href="http://localhost:3000/hotels"/>
+	    <entry>
+        <id>http://localhost:3000/hotels/1</id>
+         <title type="text">Hotel</title>
+         <updated>2009-12-13T22:44:09-08:00</updated>
+         <link rel="self" href="http://localhost:3000/hotels/1"/>
+         <content type="vnd/caelum_hotel+xml">
+           <hotel>
 	  <city>Sao Paulo</city>
 	  <created-at>2009-12-13T22:44:09Z</created-at>
 	  <id>1</id>
@@ -334,18 +334,16 @@ An Atom feed representing the same response mentioned earlier would be:
 	  <rate>4</rate>
 	  <room-count>3</room-count>
 	  <updated-at>2009-12-13T22:44:09Z</updated-at>
-
 	</hotel>
-
-	            </content>
-	          </entry>
-	          <entry>
-	            <id>http://localhost:3000/hotels/2</id>
-	            <title type="text">Hotel</title>
-	            <updated>2009-12-13T22:44:21-08:00</updated>
-	            <link rel="self" href="http://localhost:3000/hotels/2"/>
-	            <content type="vnd/caelum_hotel+xml">
-	              <hotel>
+         </content>
+       </entry>
+       <entry>
+         <id>http://localhost:3000/hotels/2</id>
+         <title type="text">Hotel</title>
+         <updated>2009-12-13T22:44:21-08:00</updated>
+         <link rel="self" href="http://localhost:3000/hotels/2"/>
+         <content type="vnd/caelum_hotel+xml">
+           <hotel>
 	  <city>Sao Paulo</city>
 	  <created-at>2009-12-13T22:44:21Z</created-at>
 	  <id>2</id>
@@ -353,12 +351,10 @@ An Atom feed representing the same response mentioned earlier would be:
 	  <rate>4</rate>
 	  <room-count>3</room-count>
 	  <updated-at>2009-12-13T22:44:21Z</updated-at>
-
-	</hotel>
-
-	            </content>
-	          </entry>
-	</feed>
+  </hotel>
+         </content>
+       </entry>
+</feed>
 </pre>
 
 And in order to generate such atom feed, we simply need to define its title:
