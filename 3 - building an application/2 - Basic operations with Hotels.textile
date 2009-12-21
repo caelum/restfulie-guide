@@ -361,13 +361,24 @@ An Atom feed representing the same response mentioned earlier would be:
 	</feed>
 </pre>
 
+And in order to generate such atom feed, we simply need to define its title:
+
+<pre>
+  def index
+    @hotels = Hotel.all
+    render :text => @hotels.to_atom(:title=>'Hotels', :controller => self), :content_type => 'application/atom+xml'
+  end
+</pre>
+
+Again, the default inherited *index* method behaves returning an atom feed if one access the 'http://localhost:3000/hotels' URI: if there is no need for customization, there is less code to be written.
+
 h2. Hypermedia in our resource list
 
 Another approach to creating a list of resources is to let hypermedia drive our client application and represent the list of resources as connected resources to this collection.
 
 Typical formats that allow representations with hypermedia support are application/xhtml with our own microformat:
 
-[note note that in xhtml with a table and content, there is still the duplication issue... otherwise the table is just dumb!]
+<blockquote>TODO add links here</blockquote>
 
 <pre>
 <?xml version="1.0" encoding="UTF-8"?>
@@ -394,26 +405,66 @@ Typical formats that allow representations with hypermedia support are applicati
 </hotels>
 </pre>
 
-[section Retrieve as an atom feed]
+h2. Atom feed and partial resource representation
 
-- works in the same way
+In our atom feed representation, Restfulie inserts by default the link to every resource. If you want partial rendering for each resource, it can be achieved by customizing the *to_xml* invocation:
 
 <pre>
-	server side code to generate the above mentioned code
+  def index
+    @hotels = Hotel.all
+    render :text => @hotels.to_atom(:title=>'Hotels', :controller => self), :content_type => 'application/atom+xml' do |hotel|
+		hotel.to_xml(:skip_instruction => true, :only => :name)
+	end
+  end
 </pre>
 
+In this case, our atom feed will look like:
 
-[section Create cities]
+<pre>
+	<?xml version="1.0"?>
+	      <feed xmlns="http://www.w3.org/2005/Atom">
+	        <id>http://localhost:3000/hotels</id>
+	        <title type="text">Hotels</title>
+	        <updated>2009-12-21T00:22:24-08:00</updated>
+	        <author><name>Hotels</name></author>
+	        <link rel="self" href="http://localhost:3000/hotels"/>
+	          <entry>
+	            <id>http://localhost:3000/hotels/1</id>
+	            <title type="text">Hotel</title>
+	            <updated>2009-12-13T22:44:09-08:00</updated>
+	            <link rel="self" href="http://localhost:3000/hotels/1"/>
+	            <content type="vnd/caelum_hotel+xml">
+	              <hotel>
+	  				<name>Caelum Objects Hotel</name>
+					</hotel>
+	            </content>
+	          </entry>
+	          <entry>
+	            <id>http://localhost:3000/hotels/2</id>
+	            <title type="text">Hotel</title>
+	            <updated>2009-12-13T22:44:21-08:00</updated>
+	            <link rel="self" href="http://localhost:3000/hotels/2"/>
+	            <content type="vnd/caelum_hotel+xml">
+	              <hotel>
+	  					<name>Caelum Objects Hotel</name>
+					</hotel>
+	            </content>
+	          </entry>
+	</feed>
+</pre>
 
+h2. Segmentation by freshness
 
-[section Updating cities]
+<blockquote>Describe by Fowler's and Jim's idea</blockquote>
 
-[section Updating hotels]
+h2. Updating hotels
 
-[section Removing hotels]
+h2. Removing hotels
 
+h2. Create flight routes
 
-[section Creating flight routes]
+Now we will replicate the hotel creation and feed features with flight routes, which will be much faster because we already know how to configure Restfulie on the server side.
+
 
 [section Server side resource <-> code mapping]
 
