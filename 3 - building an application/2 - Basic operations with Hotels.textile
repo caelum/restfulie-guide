@@ -281,9 +281,9 @@ Accept: application/xml
 </hotels>
 </pre>
 
-The *render_resource* method handled content negotiation and generated valid *application/xml* content but in order to add extra behaviour or flow control to the list of hotels, we are required to create a new media type.
+Although the *render_resource* method handled content negotiation and generated valid *application/xml* content, in order to add extra behaviour or flow control to the list of hotels we are required to create a new media type, one that encapsulates many instances of hotels.
 
-By following this path of new media type creations, the project will end up with a custom media type for almost every possible request, making them useless for other systems and losing the ability to be understood by a larger number of clients.
+By following this path of new a media type creation for every different type of information retrieval, the project will end up with a high number of custom media types, making them useless for other systems and losing the ability to be understood by a larger number of clients.
 
 
 
@@ -316,44 +316,44 @@ An Atom feed representing the same response mentioned earlier would be:
 <?xml version="1.0"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<id>http://localhost:3000/hotels</id>
-		<title type="text">Hotels</title>
-		<updated>2009-12-21T00:22:24-08:00</updated>
-    <author><name>Hotels</name></author>
-    <link rel="self" href="http://localhost:3000/hotels"/>
-	    <entry>
-        <id>http://localhost:3000/hotels/1</id>
-         <title type="text">Hotel</title>
-         <updated>2009-12-13T22:44:09-08:00</updated>
-         <link rel="self" href="http://localhost:3000/hotels/1"/>
-         <content type="vnd/caelum_hotel+xml">
-           <hotel>
-	  <city>Sao Paulo</city>
-	  <created-at>2009-12-13T22:44:09Z</created-at>
-	  <id>1</id>
-	  <name>Caelum Objects Hotel</name>
-	  <rate>4</rate>
-	  <room-count>3</room-count>
-	  <updated-at>2009-12-13T22:44:09Z</updated-at>
-	</hotel>
-         </content>
-       </entry>
-       <entry>
-         <id>http://localhost:3000/hotels/2</id>
-         <title type="text">Hotel</title>
-         <updated>2009-12-13T22:44:21-08:00</updated>
-         <link rel="self" href="http://localhost:3000/hotels/2"/>
-         <content type="vnd/caelum_hotel+xml">
-           <hotel>
-	  <city>Sao Paulo</city>
-	  <created-at>2009-12-13T22:44:21Z</created-at>
-	  <id>2</id>
-	  <name>Caelum Objects Hotel</name>
-	  <rate>4</rate>
-	  <room-count>3</room-count>
-	  <updated-at>2009-12-13T22:44:21Z</updated-at>
-  </hotel>
-         </content>
-       </entry>
+	<title type="text">Hotels</title>
+	<updated>2009-12-21T00:22:24-08:00</updated>
+	<author><name>Hotels</name></author>
+	<link rel="self" href="http://localhost:3000/hotels"/>
+	 <entry>
+    <id>http://localhost:3000/hotels/1</id>
+     <title type="text">Hotel</title>
+     <updated>2009-12-13T22:44:09-08:00</updated>
+     <link rel="self" href="http://localhost:3000/hotels/1"/>
+     <content type="vnd/caelum_hotel+xml">
+       <hotel>
+			<city>Sao Paulo</city>
+			<created-at>2009-12-13T22:44:09Z</created-at>
+			<id>1</id>
+			<name>Caelum Objects Hotel</name>
+			<rate>4</rate>
+			<room-count>3</room-count>
+			<updated-at>2009-12-13T22:44:09Z</updated-at>
+		</hotel>
+     </content>
+   </entry>
+   <entry>
+     <id>http://localhost:3000/hotels/2</id>
+     <title type="text">Hotel</title>
+     <updated>2009-12-13T22:44:21-08:00</updated>
+     <link rel="self" href="http://localhost:3000/hotels/2"/>
+     <content type="vnd/caelum_hotel+xml">
+			<hotel>
+				<city>Sao Paulo</city>
+				<created-at>2009-12-13T22:44:21Z</created-at>
+				<id>2</id>
+				<name>Caelum Objects Hotel</name>
+				<rate>4</rate>
+				<room-count>3</room-count>
+				<updated-at>2009-12-13T22:44:21Z</updated-at>
+			</hotel>
+     </content>
+   </entry>
 </feed>
 </pre>
 
@@ -370,7 +370,7 @@ Again, the default inherited *index* method behaves returning an atom feed if on
 
 h2. Hypermedia in our resource list
 
-Another approach to creating a list of resources is to let hypermedia drive our client application and represent the list of resources as connected resources to this collection.
+Another approach to creating a list of resources is to let hypermedia drive our client application and represent the list of resources as connections that can be accessed through their own URIs.
 
 Typical formats that allow representations with hypermedia support are application/xhtml with our own microformat:
 
@@ -383,22 +383,35 @@ Typical formats that allow representations with hypermedia support are applicati
 	<table class="hotels">
 		<tr id="1">
 			<td>Sao Paulo</td>
-    <td>2009-12-13T22:44:09Z</created-at>
-    <td>Caelum Objects Hotel</name>
-    <td>4</td>
-    <td>3</td>
-    <td>2009-12-13T22:44:09Z</td>
-  </hotel>
-  <hotel>
-    <city>Sao Paulo</city>
-    <created-at>2009-12-13T22:44:21Z</created-at>
-    <id>2</id>
-    <name>Some Other Hotel</name>
-    <rate>4</rate>
-    <room-count>3</room-count>
-    <updated-at>2009-12-13T22:44:21Z</updated-at>
-  </hotel>
-</hotels>
+	    <td>2009-12-13T22:44:09Z</td>
+	    <td>Caelum Objects Hotel</td>
+	    <td>4</td>
+	    <td>3</td>
+	    <td>2009-12-13T22:44:09Z</td>
+			<td>http://localhost:3000/hotels/1</td>
+	  </tr>
+	  <tr>
+	    <td>Sao Paulo</td>
+	    <td>2009-12-13T22:44:21Z</td>
+	    <td>2</td>
+	    <td>Some Other Hotel</td>
+	    <td>4</td>
+	    <td>3</td>
+	    <td>2009-12-13T22:44:21Z</td>
+			<td>http://localhost:3000/hotels/1</td>
+	  </tr>
+	</table>
+</body>
+</html>
+</pre>
+
+With such representation, one can retrieve the actual resource and act with it after accessing its URI. In the client side,
+the code will resemble navigating through connected resources:
+
+<pre>
+	hotels = Restfulie.at(HOTELS_ENTRY_POINT).get
+	hotel = hotels[1].
+	???????????? code which navigates????????
 </pre>
 
 h2. Atom feed and partial resource representation
@@ -406,12 +419,12 @@ h2. Atom feed and partial resource representation
 In our atom feed representation, Restfulie inserts by default the link to every resource. If you want partial rendering for each resource, it can be achieved by customizing the *to_xml* invocation:
 
 <pre>
-  def index
-    @hotels = Hotel.all
-    render :text => @hotels.to_atom(:title=>'Hotels', :controller => self), :content_type => 'application/atom+xml' do |hotel|
+def index
+  @hotels = Hotel.all
+  render :text => @hotels.to_atom(:title=>'Hotels', :controller => self), :content_type => 'application/atom+xml' do |hotel|
 		hotel.to_xml(:skip_instruction => true, :only => :name)
 	end
-  end
+end
 </pre>
 
 In this case, our atom feed will look like:
@@ -451,7 +464,82 @@ In this case, our atom feed will look like:
 
 h2. Segmentation by freshness
 
-<blockquote>Describe by Fowler's and Jim's idea</blockquote>
+Sometimes a resource is composed by a list of other resources as our hotel list example. Another one is an human entry point containing four sections: the top 10, my bookings, random items, and special deals.
+
+In this case, all information come from the same source, but every part has a different probable validity if it is going to be cached. If the page is served as one big chunck of information, it will always be stale due to the random items section. "My orders" is stale only when I place a new order and, in the same way, the top 10 is only stale if any item is bought and surpasses the number of times the 10th item was bought so far.
+
+One of the main issues with this type of pages which aggregate information from one or many sources with <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.21">different expire-expectations</a> is that cached versions in proxies and clients become stale faster than it should for some elements: once one of this providing sources publishes new information or is updated, the entire representation becomes stale..
+
+<a href="http://www.martinfowler.com/bliki/SegmentationByFreshness.html">Martin Fowler described</a> a well spread approach to allow those pages to be partially cached within local proxies and clients, thus sharing requested representations between multiple users.
+
+Given the hotel scenario, we could create different resources:
+
+<ul>
+<li>http://caelumhotels.com/top_sellers</li>
+<li>http://caelumhotels.com/myself/bookings</li>
+<li>http://caelumhotels.com/random</li>
+<li>http://caelumhotels.com/special</li>
+</ul>
+
+<blockquote>myself/bookings should be my username itself due to caching capabilities for intermediate layers</blockquote>
+
+And finally an aggregating page:
+
+<pre>
+&lt;html&gt;
+&lt;a class="lazy_load" href="http://caelumhotels.com/top_sellers"&gt;Top sellers&lt;/a&gt;
+&lt;a class="lazy_load" href="http://caelumhotels.com/myself/bookings"&gt;My bookings&lt;/a&gt;
+&lt;a class="lazy_load" href="http://caelumhotels.com/random"&gt;Random items&lt;/a&gt;
+&lt;a class="lazy_load" href="http://caelumhotels.com/special"&gt;Special items&lt;/a&gt;
+
+</pre>
+
+And then, for each <b>lazy_load</b> link, we create a <b>div</b> with its content:
+
+<pre>
+&lt;script&gt;
+$('.lazy_load').each(function(link) {
+  uri = link.attr('href'); 
+  div = $('<div></div>').load(uri); // cache hits!
+  link.after(div);
+});
+&lt;/script&gt;
+&lt;/html&gt;
+</pre>
+
+This allows our proxies to cache each component in our page apart from the page itself: whenever its content becomes stale in a proxy, only part of that page needs to be updated.
+
+In a web were most data can be cached and does not become stale so fast, this technique should usually lessen the amount of data being transfered between client and server.
+
+All one needs to do is <a href="http://www.mnot.net/cache_docs/">properly use the http headers for caching</a>.
+
+<blockquote>Remember that if your client supports either parallel requests to the server and/or keep-alive connection, the results might be even better.</blockquote>
+
+Pretty much in the same way as with the human web, a distributed system using the web as its infrastructure will <a href="http://www.mnot.net/cache_docs/">gain the same cache benefits </a>as long as they implement correct caching policies through http headers (and correct http verbs).
+
+When your server provides a resource representation linking to a series of other related resources the client and proxies staying on the way will be allowed to cache each and every other resource on its own.
+
+This approach results in changes applied to one resource not affecting cached representations of other resources. An stale representation will not affect those accessing other resources within the same context.
+
+Sometimes the decision whether to change latency for scalability might depend on how you think your clients will use your resources: in the human web mentioned above, the developer knew exactly how its clients would access it.
+
+<blockquote>Remember: there is zero latency for unexpired resources and there is small latency for retrieving cached versions of a resource from a shared proxy</blockquote>
+
+<blockquote>TODO image shared proxy: show the advantage</blockquote>
+
+In distributed systems using REST, guessing how resources will be used can be dangerous as it allows you to tight couple yourself to this behaviour while published resources can and would be used in unforeseen ways.
+
+Giving information that will help most cases is fine and providing links to further resources details allow you to balance between latency and scalability - due to caching - as you wish.
+
+h3. Dynamic contracts
+
+This is only possible because we have <a href="http://guilhermesilveira.wordpress.com/2009/12/08/hypermedia-making-it-easier-to-create-dynamic-contracts/">signed dynamic contracts with our clients.</a> They expect us to follow some formal format definition (<a href="http://www.w3.org/TR/xhtml1/">defined in xhtml</a>) and processes. How our processes are presented within our representations is the dynamic part of the contract.
+
+While the fixed part can be validated<a href="http://www.w3.org/XML/Schema"> with the use of schema validators</a>, the dynamic part - the process - which is guided by our server needs to be validated through testing the behaviour of our applications: asserting that hypermedia guided transitions should be reflected in our application state.
+
+h2. Progressive enhancement
+
+Martin notes that this is a <a href="http://en.wikipedia.org/wiki/Progressive_enhancement">kind of progressive enhancement</a>: although its definition is related to accessibility, its control over bandwidth benefits are similar to the approach mentioned ones.
 
 h2. Updating hotels
 
@@ -465,3 +553,6 @@ Now we will replicate the hotel creation and feed features with flight routes, w
 [section Server side resource <-> code mapping]
 
 [section Client side resource <-> domain mapping]
+
+
+<blockquote>Good Relations RDF at http://booking.cheaptotravel.com/hotel/10017444-10210890O.html</blockquote>

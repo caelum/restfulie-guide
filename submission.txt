@@ -105,11 +105,13 @@ At the same time, Restfulie will use the book as its how-to guide.
 ???????? need some ideas here ????????
 
 Bio
-Guilherme Silveira is the technical leader at Caelum, taking part on architectural decisions with consulting clients, and also responsible for the training technical contents. He has worked at a few open source projects, created Restfulie for Java and Ruby, VRaptor and commited to XStream and other projects....?????
+Guilherme Silveira is the CTO at Caelum, taking part on architectural decisions with consulting clients, and also responsible for the training technical contents. He has worked at some open source projects, created Restfulie for Java and for Ruby, VRaptor and commited to XStream.
 
 Jim Webber is ...
 
 20 page writing sample
 
-	github chapter 3.1 and 3.2
+	- links are references to be added as footnotes
+	- github chapter 3.1 and 3.2
+	
 	

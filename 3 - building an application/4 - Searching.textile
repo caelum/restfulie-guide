@@ -1,3 +1,6 @@
 [section Searching through a list of resources]
 
 [section Saving a search: creating a report]
+
+
+uris are ids while searching

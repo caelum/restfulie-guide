@@ -1,0 +1,6 @@
+> This is key. The client isn't "waiting to do the next thing". It's not
+> got a "list of things to do", and going through them one by one.
+> Rather it has a list of guideposts that it's told to follow, and the
+> actual PATH it takes isn't known to the client until it reaches a goal
+> post.
+
