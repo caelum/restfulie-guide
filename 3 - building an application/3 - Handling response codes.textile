@@ -81,7 +81,17 @@ In order to handle all those successful cases (2xx), one can invoke the <strong>
 	puts "Hotel #{hotel.name} was deleted"
 </pre>
 
-<blockquote>TODO example for each other set of responses (1XX, 3XX, 4XX, 5XX)</blockquote>
+h3. Other results
+
+There is one method available for each group of results defined in the HTTP specification and you can use them to program your client behavior accordingly to your server response.
+
+<ul>
+	<li>100~199: is_informational?</li>
+	<li>200~299: is_successful?</li>
+	<li>300~399: is_redirection?</li>
+	<li>400~499: is_client_error?</li>
+	<li>500~599: is_server_error?</li>
+</ul>
 
 h2. Custom behavior on undesired responses
 
