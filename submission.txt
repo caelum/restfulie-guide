@@ -105,13 +105,12 @@ At the same time, Restfulie will use the book as its how-to guide.
 ???????? need some ideas here ????????
 
 Bio
-Guilherme Silveira is the CTO at Caelum, taking part on architectural decisions with consulting clients, and also responsible for the training technical contents. He has worked at some open source projects, created Restfulie for Java and for Ruby, VRaptor and commited to XStream.
+Guilherme Silveira is the Lead Architect for Caelum, taking part on architectural decisions with clients. He is also responsible for Caelum's training content related to architectural aspects and agile practices. Guilherme has contributed with open source projects, created Restfulie for Java and for Ruby, VRaptor and commited to XStream.
 
-Jim Webber is ...
-
+Dr. Jim Webber is the Global Head of Architecture for ThoughtWorks where he works with clients on delivering dependable service-oriented systems. Jim was formerly a senior researcher with the UK E-Science programme where he developed strategies for aligning Grid computing with Web Services practices and architectural patterns for dependable Service-Oriented computing. Jim has extensive Web Services architecture and development experience as an architect with Arjuna Technologies and was the lead developer with Hewlett-Packard on the industry's first Web Services Transaction solution.
+Jim is an active speaker in the Web Services space and is co-author of the book "Developing Enterprise Web Services - An Architect's Guide" in addition to being a contributing author to other books and articles.
+Jim holds a B.Sc. in Computing Science and Ph.D. in Parallel Computing both from the University of Newcastle upon Tyne.
 20 page writing sample
 
 	- links are references to be added as footnotes
 	- github chapter 3.1 and 3.2
-	
-	

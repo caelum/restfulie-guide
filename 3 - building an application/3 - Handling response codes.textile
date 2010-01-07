@@ -1,0 +1,88 @@
+h1. Handling response codes
+
+This chapter will cover how to handle response codes in the client side.
+
+h2. 200 OK
+
+The most typical result a web request can get is <strong>200 OK</strong> which means that the requist was a successfuly processed, according to HTTP 1.1 specification.
+
+h3. GET
+
+<pre>
+GET an entity corresponding to the requested resource is sent in the response;
+</pre>
+
+Restfulie will automatically deserialize the content's result if the response code is 200:
+
+<pre>
+	hotel = Restfulie.at('http://localhost:30000/hotels/1').get
+	puts "Hotel #{hotel.name}"
+</pre>
+
+h3. HEAD
+
+<pre>
+HEAD the entity-header fields corresponding to the requested resource are sent in the response without any message-body;
+</pre>
+
+Restfulie will ignore any message body contained within a 200 OK response from a HEAD request.
+
+<blockquote>TODO implement it, ignoring its content</blockquote>
+
+h3. POST
+
+<pre>
+POST an entity describing or containing the result of the action;
+</pre>
+
+h3. PATCH
+
+And according to the <strong>PATCH</strong> verb definition [http://tools.ietf.org/html/draft-dusseault-http-patch-16], a 200 OK answer will return the resource new representation, meaning that the modifications took place.
+
+<blockquote>TODO implement it</blockquote>
+
+h2. 201 Created
+
+<pre>
+	The server has fulfilled the request but does not need to return an entity-body, and might want to return updated metainformation.
+</pre>
+
+Resources are created through the use of the <strong>POST</strong> verb and include a <strong>Location</strong> header with an URI pointing to this resource address.
+
+Once a server answers such a request with a <strong>201 Created</strong> response, Restfulie will automatically follow the specific URI and retrieve the resource:
+
+<pre>
+	hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo", :room_count => 3}
+
+	hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').create(hotel.to_xml(:root => "hotel"))
+
+	puts "Response was #{hotel.web_response}"
+</pre>
+
+h2. Undesired responses
+
+In some cases, the result is not exactly what we were desired, a successful 200~299 response code, and our code needs to act accordingly. It is a bad practice to act as if every request execution was a successful one. In the human web, we are constantly checking whether there was any error prior to following a process or browsing further.
+
+The same applies to our client software: it should check whether the response was successful prior to going further and this can be easily achieved by accessing the response code.
+
+<pre>
+	hotel = Restfulie.at('http://localhost:30000/hotels/1').get
+	raise "unable to delete resource" unless hotel.destroy.web_response.code == "200"
+	puts "Hotel #{hotel.name} was deleted"
+</pre>
+
+Based on the example above, the object returned by invoking <strong>web_response</strong> provides a method returning the response code, but a <strong>DELETE</strong> operation can also answer with '202 Accepted' and '204 No Content'.
+
+In order to handle all those successful cases (2xx), one can invoke the <strong>is_successful?</strong> method:
+
+<pre>
+	hotel = Restfulie.at('http://localhost:30000/hotels/1').get
+	raise "unable to delete resource" unless hotel.destroy.web_response.is_successful?
+	puts "Hotel #{hotel.name} was deleted"
+</pre>
+
+<blockquote>TODO example for each other set of responses (1XX, 3XX, 4XX, 5XX)</blockquote>
+
+h2. Custom behavior on undesired responses
+
+<blockquote>TODO implement custom exceptions on specific response codes</blockquote>

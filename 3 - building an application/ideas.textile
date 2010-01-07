@@ -4,3 +4,23 @@
 > actual PATH it takes isn't known to the client until it reaches a goal
 > post.
 
+LATER SOFT DELETE
+In our system we will not allow hotels to be entirely removed from our database as the links pointing to it are required to remain valid even after its 'removal', therefore a soft delete will be executed through a <b>removed</b> flag created in the hotel table.
+note: in this case, I cannot use the DELETE verb (soft delete... read the information from the http verb definition)
+note: keep both implementations: deleteand softdelete, with soft delete as make hotel unavailable
+
+
+
+
+<blockquote>TODO Good Relations RDF at http://booking.cheaptotravel.com/hotel/10017444-10210890O.html</blockquote>
+
+
+- at the end, pass through every piece of code and try to simplify it
+
+- change all rel to non IANA based?
+
+
+- capitulo mostrando com jax-rs como seria feio e horrivel
+- capitulo que seria em java
+- capitulo que seria em c#
+

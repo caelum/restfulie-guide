@@ -405,15 +405,6 @@ Typical formats that allow representations with hypermedia support are applicati
 </html>
 </pre>
 
-With such representation, one can retrieve the actual resource and act with it after accessing its URI. In the client side,
-the code will resemble navigating through connected resources:
-
-<pre>
-	hotels = Restfulie.at(HOTELS_ENTRY_POINT).get
-	hotel = hotels[1].
-	???????????? code which navigates????????
-</pre>
-
 h2. Atom feed and partial resource representation
 
 In our atom feed representation, Restfulie inserts by default the link to every resource. If you want partial rendering for each resource, it can be achieved by customizing the *to_xml* invocation:
@@ -460,6 +451,62 @@ In this case, our atom feed will look like:
 	            </content>
 	          </entry>
 	</feed>
+</pre>
+
+With such representation, one can retrieve the actual resource and act with it after accessing its URI. In the client side,
+the code will resemble navigating through connected resources:
+
+<pre>
+	hotels = Restfulie.at(HOTELS_ENTRY_POINT).get
+	hotel = hotels[1]
+	puts "name: #{hotel.name}"
+	
+	# retrieves the resource through GET
+	hotel = hotel.self
+	puts "room count: #{hotel.room_count}"
+</pre>
+
+Note that if the hotel representation itself had a link to related resource, i.e. similar hotels, you could navigate through that link:
+
+<pre>
+	<?xml version="1.0"?>
+	      <feed xmlns="http://www.w3.org/2005/Atom">
+	        <id>http://localhost:3000/hotels</id>
+	        <title type="text">Hotels</title>
+	        <updated>2009-12-21T00:22:24-08:00</updated>
+	        <author><name>Hotels</name></author>
+	        <link rel="self" href="http://localhost:3000/hotels"/>
+	          <entry>
+	            <id>http://localhost:3000/hotels/1</id>
+	            <title type="text">Hotel</title>
+	            <updated>2009-12-13T22:44:09-08:00</updated>
+	            <link rel="self" href="http://localhost:3000/hotels/1"/>
+	            <content type="vnd/caelum_hotel+xml">
+	              <hotel>
+	  				<name>Caelum Objects Hotel</name>
+						<link rel="related" href="http://localhost:3000/hotels/2" />
+					</hotel>
+	            </content>
+	          </entry>
+	          <entry>
+	            <id>http://localhost:3000/hotels/2</id>
+	            <title type="text">Hotel</title>
+	            <updated>2009-12-13T22:44:21-08:00</updated>
+	            <link rel="self" href="http://localhost:3000/hotels/2"/>
+	            <content type="vnd/caelum_hotel+xml">
+	              <hotel>
+	  					<name>Caelum Objects Hotel</name>
+							<link rel="related" href="http://localhost:3000/hotels/1" />
+					</hotel>
+	            </content>
+	          </entry>
+	</feed>
+</pre>
+
+<pre>hotels = Restfulie.at(HOTELS_ENTRY_POINT).get
+hotel = hotels[1]
+puts "name: #{hotel.name}"
+puts "similar hotel: #{hotel.related.name}"
 </pre>
 
 h2. Segmentation by freshness
@@ -541,18 +588,171 @@ h2. Progressive enhancement
 
 Martin notes that this is a <a href="http://en.wikipedia.org/wiki/Progressive_enhancement">kind of progressive enhancement</a>: although its definition is related to accessibility, its control over bandwidth benefits are similar to the approach mentioned ones.
 
+h2. Hotel atom entry
+
+<blockquote>TODO explain how to use atom to access every hotel.</blockquote>
+
 h2. Updating hotels
+
+There are two common options to allow resource update, you can either use the verb PUT sending the entire resource representation or PATCH to change parts of the resource.
+
+<blockquote>TODO Explicar como faz um update</blockquote>
+
+h2. Full resource update
+
+<blockquote>explain in a later chapter</blockquote>
+
+
+h2. Conditional update
+
+
+
+
+
+
+
 
 h2. Removing hotels
 
-h2. Create flight routes
+In order to remove hotels from the database, we need to write a <b>destroy</b> method that loads the required domain object and removes it. If it does not exist, the server should answer with a <b>404</b> response and to achieve it we can simply implement the method invoking the find and destroy methods:
 
-Now we will replicate the hotel creation and feed features with flight routes, which will be much faster because we already know how to configure Restfulie on the server side.
+<pre>
+def destroy
+  @hotel = Hotel.find(params[:id])
+  @hotel.destroy
+  head :ok
+end
+</pre>
+
+Because Rails already answer with a <b>404 not found</b> response if the model is not not found, we do not need a conditional check.
+
+Once again, RestfulieController default <b>destroy</b> behaviour is to locate the resource and remove it from the database, answering with a <b>404 not found</b> if it is not found. Once our controller includes RestfulieController's behaviour, there is no need to write the <b>destroy</b> method again, only if we want to customize it:
+
+<pre>
+class HotelsController < ApplicationController
+  include Restfulie::Server::RestController
+
+	# implicit declared the destroy method
+
+end
+</pre>
+
+The client will not access the <b>destroy</b> process as an entry point: it will first need to access the resource in order to find out whether it can be removed or not from the server and this will be achieved now, through the use of hypermedia as a guiding feature to our processes and transitions.
+
+h2. Hypermedia guided resource removal
+
+But how do we know that in order to remove that resource, I need to <strong>DELETE</strong> that specific URI?
+
+<pre>
+hotels = Hotel.at('http://localhost:3000/hotels').get
+hotel = hotels[0]
+</pre>
+
+In other words, I want to delete the first hotel found, where should I send a <strong>DELETE</strong> request to?
+
+The hotel representation can include a <strong>self</strong> link, which gives the client an URI which identifies the resource itself. By sending a <strong>DELETE</strong> request to this URI, the resource should be deleted.
+
+An atom entry already contains a <strong>self</strong> link and therefore Restfulie can use it to delete the resource from the server:
+
+<pre>
+<entry>
+	<id>http://localhost:3000/hotels/1</id>
+	<title type="text">Hotel</title>
+	<updated>2009-12-13T22:44:09-08:00</updated>
+	<link rel="self" href="http://localhost:3000/hotels/1"/>
+	<content type="vnd/caelum_hotel+xml">
+		<hotel>
+			<name>Caelum Objects Hotel</name>
+		</hotel>
+	</content>
+</entry>
+</pre>
+
+<pre>
+hotels = Hotel.at('http://localhost:3000/hotels').get
+hotel = hotels[0]
+hotel.destroy
+</pre>
+
+Because the hotels entry point gave us an hotel feed, Restfulie knowns that the first entry's URI is http://localhost:3000/hotels/1 and will send a DELETE request	upon the <strong>destroy</strong> method invocation.
+
+h2. Deleting a resource based on a non-atom entry representation
+
+<blockquote>TODO nasty section name</blockquote>
+<blockquote>TODO explain this section</blockquote>
 
 
-[section Server side resource <-> code mapping]
-
-[section Client side resource <-> domain mapping]
 
 
-<blockquote>Good Relations RDF at http://booking.cheaptotravel.com/hotel/10017444-10210890O.html</blockquote>
+
+
+h2. Learning more about our resources
+
+<blockquote>TODO the verb OPTIONS</blockquote>
+
+
+
+
+
+
+
+
+h2. Flight routes
+
+Flight routes will be statically created in our system and include an origin, destination, local time of departure and arrival. In order to model a simpler system, we will assume all flights are available every day. Using Rails scaffold we create the Flight class:
+
+<pre>
+script/generate scaffold Flight from:string to:string departure:time arrival_after:integer
+rake db:migrate
+</pre>
+
+And insert a few flights through a custom migration:
+
+<pre>
+script/generate migration insert_basic_flight_routes
+</pre>
+
+<pre>
+class InsertBasicFlightRoutes < ActiveRecord::Migration
+  def self.up
+    Flight.new(:from => "Sao Paulo", :to => "Miami", :departure => Time.parse("08:55"), :arrival_after => (12.hours + 50.minutes)).save
+    Flight.new(:from => "Sao Paulo", :to => "Miami", :departure => Time.parse("09:25"), :arrival_after => (11.hours + 50.minutes)).save
+    Flight.new(:from => "Sao Paulo", :to => "Miami", :departure => Time.parse("13:45"), :arrival_after => (12.hours + 50.minutes)).save
+    Flight.new(:from => "Sao Paulo", :to => "Miami", :departure => Time.parse("16:50"), :arrival_after => (13.hours + 50.minutes)).save
+    Flight.new(:from => "Miami", :to => "Los Angeles", :departure => Time.parse("15:45"), :arrival_after => (8.hours + 15.minutes)).save
+    Flight.new(:from => "Miami", :to => "Los Angeles", :departure => Time.parse("17:50"), :arrival_after => (7.hours + 50.minutes)).save
+  end
+
+  def self.down
+    Flight.destroy_all
+  end
+end
+</pre>
+
+<blockquote>Note: online travel agencies will usually locate airports near your city prior to executing your search.</blockquote>
+
+We will also add new hotels in Miami and Los Angeles to our travel system:
+
+<pre>
+	script/generate migration insert_extra_hotels
+</pre>
+
+<pre>
+	class InsertExtraHotels < ActiveRecord::Migration
+	  def self.up
+	    Hotel.new({:name => "Miami Objects", :city => "Miami", :room_count => 8, :rate => 4}).save
+	    Hotel.new({:name => "Resting in Miami", :city => "Miami", :room_count => 10, :rate => 3}).save
+	    Hotel.new({:name => "Restfulie in LA", :city => "Los Angeles", :room_count => 2, :rate => 5}).save
+	    Hotel.new({:name => "Los Angeles Objects", :city => "Los Angeles", :room_count => 16, :rate => 3}).save
+	  end
+
+	  def self.down
+	  end
+	end
+</pre>
+
+And execute everything:
+
+<pre>
+	rake db:migrate
+</pre>
