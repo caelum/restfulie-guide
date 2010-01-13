@@ -1,14 +1,14 @@
 h1. Basic resource operations
 
-This chapter will introduce how to use the basic HTTP verbs to create, remove and retrieve a resource or a collection.
-This use of the HTTP verbs has been widely adopted although with a few modifications from the HTTP specification due to some PUT
-restrictions.
+This chapter will introduce how to use the basic HTTP verbs to create, remove and retrieve a resource or its collection using Restfulie. This simple usage of the HTTP verbs has been widely adopted by the development communities in every language although with a few modifications from the HTTP specification due to some PUT restrictions.
 
-Rails provides support for CRUD over HTTP verbs using request parameters instead of resource representations therefore Restfulie will allow the use of the later to deal with resources.
+Rails provides support for CRUD over HTTP using request parameters in order to pass information to the server. A REST architecture will use a resource representations through specific media types, therefore Restfulie will allow requests to pass through its body the resource representation or related content and deal with it.
+
+For the client, it means that he is supposed to make more use of request bodies instead of request parameters, while the server will worry about understanding such typically well-known representations.
 
 h2. Our hotel media-type
 
-We start creating our hotel model with three fields describing it, its name, city and total number of rooms, using Rail's scaffold feature, that also generates our controller:
+We start creating our hotel model with three fields describing it, its name, city and total number of rooms, using Rail's scaffold feature that also generates some basic controllers:
 
 <pre>
 script/generate scaffold hotel name:string city:string room_count:integer
@@ -16,19 +16,7 @@ rake db:create:all
 rake db:migrate
 </pre>
 
-Our hotel representation can not be pure xml as it is not a hypermedia format. We will adopt a custom media-type that
-provides information for our hotel and supports links: **vnd/hotel+xml**.
-
-We configure Restfulie to use this media type for our Hotel by invoking the **media_type** method:
-
-<pre>
-class Hotel < ActiveRecord
-	acts_as_restfulie
-	media_type "vnd/hotel+xml"
-end
-</pre>
-
-A valid representation of our hotel is:
+Our hotel representation can not be pure xml as it is not a hypermedia format [link to Jim's book]:
 
 <pre>
 <hotel>
@@ -38,7 +26,29 @@ A valid representation of our hotel is:
 </hotel>
 </pre>
 
-The 1-1 mapping between our domain model and resources might not be the best solution, and we will see later how to map resources in other ways to our domain.
+We will adopt a custom media-type that provides information for our hotel's relations, supporting links: **vnd/hotel+xml**.
+In order to configure Restfulie to use this media type for our Hotel, one invokes the **media_type** method, passing any number of custom media types that your model can be mapped to:
+
+<pre>
+class Hotel < ActiveRecord
+	acts_as_restfulie
+	media_type "vnd/hotel+xml"
+end
+</pre>
+
+Once such media type has been configured, a valid representation of our hotel, showing a relation to a similar hotel by using atom's link element, which describe a relation to another resource, with its meaning described by its rel attribute.
+Such attribute comes from Atom's specification and if the rel element does not follow one of the possible values described by that file, it should be prefixed with its namespace:
+
+<pre>
+<hotel>
+	<name>Caelum Objects Hotel</name>
+	<room_count>220</roomt_count>
+	<city>Sao Paulo</city>
+	<link rel="http://caelumobjects.com/hotels/similar" href="http://localhost:3000/hotels/2" />
+</hotel>
+</pre>
+
+In such case, our hotel resource has a similar one that can be retrieved by sending a GET request to <b>http://localhost:3000/hotels/2</b>.
 
 h2. Creating hotels
 
@@ -588,15 +598,126 @@ h2. Progressive enhancement
 
 Martin notes that this is a <a href="http://en.wikipedia.org/wiki/Progressive_enhancement">kind of progressive enhancement</a>: although its definition is related to accessibility, its control over bandwidth benefits are similar to the approach mentioned ones.
 
+h2. Domain mapping to resources
+
+The one to one mapping between our domain model and published resource types might not be the best solution, so you can configure Restfulie how to generate a resource representation based on some specific conditions to your system: one or more domain objects that are mapped to a web resource through the arguments passed to the resource representation serialization method.
+
+In such cases our <b>Hotel</b> type can have its <b>to_xml</b> method overriden:
+
+<pre>
+class Hotel < ActiveRecord::Base
+	acts_as_restfulie
+	media_type "vnd/caelum_hotel+xml", "vnd/caelum_hotel+json"
+	
+	def logo
+		logo_url self.id
+	end
+	
+	def to_xml(options)
+		options[:methods] => :logo
+		super(options)
+	end
+end
+</pre>
+
 h2. Hotel atom entry
 
 <blockquote>TODO explain how to use atom to access every hotel.</blockquote>
 
 h2. Updating hotels
 
-There are two common options to allow resource update, you can either use the verb PUT sending the entire resource representation or PATCH to change parts of the resource.
+There are two common options to allow resource update, you can either use the verb PUT sending the entire resource representation or PATCH to change parts of the resource [reference: PATCH verb approved proposal].
 
-<blockquote>TODO Explicar como faz um update</blockquote>
+PUT requests were used sometimes with partial resource representations due to the non existence of the PATCH verb, which has only lately been approved as a standard.
+
+A typical update behavior with full resource representation include a few steps. Once an URI represents an specific resource, the resource id can be extracted from it. Then it needs to check that the required resource exists returning a <b>404</b> in case it does not, and Rails takes care of both features for us while loading a model:
+
+<pre>
+def update
+  @hotel = Hotel.find(params[:id])
+end
+</pre>
+
+After that the resource might be in such a state that it can not be updated. In our hotel system, a hotel can always be updated, therefore we shall configure it to allow updates to be always executed:
+
+<pre>class Hotel < ActiveRecord::Base
+	acts_as_restfulie do |hotel, t|
+	  t << [:update]
+  end
+	media_type "vnd/caelum_hotel+xml", "vnd/caelum_hotel+json"
+end
+</pre>
+
+Now our hotel representation presents a new link to our clients, letting them know that they can update their hotels through the hotel resource URI with a PUT request. The URI is discovered by asking Rails for the <b>update</b> URI, which was configured in the <b>routes.rb</b> file when the scaffold generator was run.
+
+<pre>
+HTTP 1.1
+GET http://localhost:3000/hotels/1
+</pre>
+
+Such a GET request to retrieve a hotel now returns:
+
+<pre><hotel>
+	<city>Sao Paulo</city>
+	<created-at>2010-01-01T15:10:22Z</created-at>
+	<id>1</id>
+	<name>Caelum Objects Hotel</name>
+	<rate>4</rate>
+	<room-count>3</room-count>
+	<updated-at>2010-01-01T15:10:22Z</updated-at>
+	<atom:link rel="update" href="http://localhost:3000/hotels/1"/>
+</hotel>
+</pre>
+
+Our server should check if the hotel can be updated and answer with a <b>405</b> response in case it does not. Such check is provided by Restfulie by invoking the <b>can?</b> method passing an argument, the symbol which is the transition or relation name to our resource.
+
+After that, content negotiation takes place so the server checks whether the content sent by the client is comprehensible and makes sense to update this resource. The code to achieve this check is exactly the same as when creating a resource:
+
+<pre>
+  return head :status => 405 unless @loaded.can? :update
+
+  return head 415 unless fits_content(Hotel, request.headers['CONTENT_TYPE'])
+</pre>
+
+Finally the server should read the data from the request body, extracting the root element. This parsed data is then stored in a hash because Rails will use this hash to update our model:
+
+<pre>
+  @model = Hash.from_xml(request.body.string)[model_name]
+</pre>
+
+h2. 
+
+if @loaded.update_attributes(@model)
+  render_resource @loaded
+else
+  render :xml => @loaded.errors, :status => :unprocessable_entity
+end
+
+h2. Update callback
+
+Because the entire resource representation might override any domain objects relations hidden from the resource view, it is important to give the controller a chance to modify the loaded information from the server prior to using it to update the related objects in the database.
+
+In order to do it, a <b>pre update</b> callback can be implemented by configuring Restfulie to invoke it prior to update:
+
+<pre>class HotelsController < ApplicationController
+  as_restfulie_controller do |config|
+		config.update.invoke_before(:pre_update)
+	end
+
+	# other controller's content here
+end
+</pre>
+
+Our system does not need to execute any parsing on the hash prior to updating the loaded object, but it could, for example, increase the number of updates executed with it:
+
+<pre>def pre_update(hash, hotel)
+	hotel.update_count++
+end
+</pre>
+
+h2. Other callbacks
+
+Restfulie provides callbacks for every possible operation with resources.
 
 h2. Full resource update
 
@@ -714,13 +835,18 @@ script/generate migration insert_basic_flight_routes
 
 <pre>
 class InsertBasicFlightRoutes < ActiveRecord::Migration
+
+	def new_flight(from, to, departure, arrival)
+  	Flight.new(:from => from, :to => to, :departure => departure, :arrival_after => arrival).save
+	end
+	
   def self.up
-    Flight.new(:from => "Sao Paulo", :to => "Miami", :departure => Time.parse("08:55"), :arrival_after => (12.hours + 50.minutes)).save
-    Flight.new(:from => "Sao Paulo", :to => "Miami", :departure => Time.parse("09:25"), :arrival_after => (11.hours + 50.minutes)).save
-    Flight.new(:from => "Sao Paulo", :to => "Miami", :departure => Time.parse("13:45"), :arrival_after => (12.hours + 50.minutes)).save
-    Flight.new(:from => "Sao Paulo", :to => "Miami", :departure => Time.parse("16:50"), :arrival_after => (13.hours + 50.minutes)).save
-    Flight.new(:from => "Miami", :to => "Los Angeles", :departure => Time.parse("15:45"), :arrival_after => (8.hours + 15.minutes)).save
-    Flight.new(:from => "Miami", :to => "Los Angeles", :departure => Time.parse("17:50"), :arrival_after => (7.hours + 50.minutes)).save
+    new_fligth("Sao Paulo", "Miami", Time.parse("08:55"), (12.hours + 50.minutes))
+    new_fligth("Sao Paulo", "Miami", Time.parse("09:25"), (11.hours + 50.minutes))
+    new_fligth("Sao Paulo", "Miami", Time.parse("13:45"), (12.hours + 50.minutes))
+    new_fligth("Sao Paulo", "Miami", Time.parse("16:50"), (13.hours + 50.minutes))
+    new_fligth("Miami", "Los Angeles", Time.parse("15:45"), (8.hours + 15.minutes))
+    new_fligth("Miami", "Los Angeles", Time.parse("17:50"), (7.hours + 50.minutes))
   end
 
   def self.down
