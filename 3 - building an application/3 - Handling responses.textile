@@ -82,6 +82,12 @@ There is one method available for each group of results defined in the HTTP spec
 	<li>500~599: is_server_error?</li>
 </ul>
 
+A typical client application will only check for successful results: if the request was unsuccessful, execute some specific control behavior. Redirection and informational responses are handled directly by Restfulie when possible.
+
+For example, a <b>301</b> response from a <b>GET</b> request will be automatically followed but due to the HTTP specification, when executing a <b>POST</b> response it will not follow such response. It can be configured through Restfulie's API, though:
+
+<blockquote>TODO example on how to follow 301</blockquote>
+
 h2. The response and it's headers
 
 Restfulie provides easy access to the response object and it's header through the <b>web_response</b> and <b>web_response[header_name]</b>:
