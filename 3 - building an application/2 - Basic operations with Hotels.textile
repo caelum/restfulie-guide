@@ -191,18 +191,13 @@ hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').
 puts "Rated: #{hotel.rate}"
 </pre>
 
-<blockquote>
-The server side can evolve its model without affecting running clients. REST client frameworks
-should be written in a way that allows servers to evolve its model content without affecting the client.
-This behaviour is called forward-compatibility and is implemented in Restfulie through the use of dynamic generated methods that allow access to the new unexpected content.
-</blockquote>
+Following such principles, the server side can evolve its model without affecting running clients, therefore REST client frameworks should be written in a way that allows servers such evolution to take place.
 
+This behavior is called forward-compatibility and is implemented in Restfulie through the use of dynamic generated methods that allow access to the new unexpected content.
 
+Restfulie Rails and C# client implementation supports the creation of dynamic methods due to the language nature, while Java allow users to access resources state transitions and relations through a fixed API that allows custom parameters.
 
-
-
-
-
+REST APIs shall not deal only with HTTP headers, responses and URIs but implement content type negotiation and default serialization behavior that pushes developers towards REST systems, otherwise the developer is still open to write a "restless" system with a Rest-ready API.
 
 h2. Mapping responses to our domain
 
@@ -221,7 +216,6 @@ And now we can read it from a specific URI:
 hotel = Hotel.from_web 'http://localhost:3000/hotels/1'
 puts "Hotel #{hotel.name} retrieved"
 </pre>
-
 
 h2. Content type
 
@@ -294,10 +288,6 @@ Accept: application/xml
 Although the *render_resource* method handled content negotiation and generated valid *application/xml* content, in order to add extra behaviour or flow control to the list of hotels we are required to create a new media type, one that encapsulates many instances of hotels.
 
 By following this path of new a media type creation for every different type of information retrieval, the project will end up with a high number of custom media types, making them useless for other systems and losing the ability to be understood by a larger number of clients.
-
-
-
-
 
 h2. Free caching and 304 support
 
@@ -543,25 +533,25 @@ Given the hotel scenario, we could create different resources:
 And finally an aggregating page:
 
 <pre>
-&lt;html&gt;
-&lt;a class="lazy_load" href="http://caelumhotels.com/top_sellers"&gt;Top sellers&lt;/a&gt;
-&lt;a class="lazy_load" href="http://caelumhotels.com/myself/bookings"&gt;My bookings&lt;/a&gt;
-&lt;a class="lazy_load" href="http://caelumhotels.com/random"&gt;Random items&lt;/a&gt;
-&lt;a class="lazy_load" href="http://caelumhotels.com/special"&gt;Special items&lt;/a&gt;
+<html>
+<a class="lazy_load" href="http://caelumhotels.com/top_sellers">Top sellers</a>
+<a class="lazy_load" href="http://caelumhotels.com/myself/bookings">My bookings</a>
+<a class="lazy_load" href="http://caelumhotels.com/random">Random items</a>
+<a class="lazy_load" href="http://caelumhotels.com/special">Special items</a>
 
 </pre>
 
 And then, for each <b>lazy_load</b> link, we create a <b>div</b> with its content:
 
 <pre>
-&lt;script&gt;
+<script>
 $('.lazy_load').each(function(link) {
   uri = link.attr('href'); 
   div = $('<div></div>').load(uri); // cache hits!
   link.after(div);
 });
-&lt;/script&gt;
-&lt;/html&gt;
+</script>
+</html>
 </pre>
 
 This allows our proxies to cache each component in our page apart from the page itself: whenever its content becomes stale in a proxy, only part of that page needs to be updated.
