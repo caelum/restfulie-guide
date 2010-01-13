@@ -714,9 +714,6 @@ h2. Full resource update
 <blockquote>explain in a later chapter</blockquote>
 
 
-h2. Conditional update
-
-
 
 
 

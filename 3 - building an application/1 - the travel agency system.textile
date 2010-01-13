@@ -1,4 +1,4 @@
-<h2>The system</h2>
+<h1>The travel agency system</h1>
 
 Throughout the book, we will be a web system that allow clients to book hotels and flights using a RESTful API, implying in a set of constraints which the architecture has to follow in order to obtain the advantages mentioned by Roy Fielding in his dissertation [reference Roy's dissertation].
 

@@ -101,3 +101,9 @@ puts "The response content type was #{hotel.web_response['Content-type']}"
 h2. Custom behavior on undesired responses
 
 <blockquote>TODO implement custom exceptions on specific response codes</blockquote>
+
+h2. Typical reactions
+
+<blockquote>TODO Typical reactions on common responses as Conditional Update</blockquote>
+
+h2. Conditional update
