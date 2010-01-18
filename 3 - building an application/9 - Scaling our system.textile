@@ -40,7 +40,32 @@ Content-Type: application/atom+xml; charset=utf-8
 </hotel>
 </pre>
 
-This and the following possibilities of local caches are supported by default, without any extra effort from the client developer.
+This is supported by default, without any extra effort from the client developer.
+
+
+h2. Conditional getting
+
+Restfulie allows the use of conditional resource retrieval through the use of <b>Etag</b> and <b>Last-modified</b> headers. Once a resource is retrieved, it keeps within its object both reponse values, so it can use them to retrieve the resource again, when required.
+
+Restfulie will use those headers by default if any <b>self</b> relation is invoked as a method, therefore if the server implements an <b>Etag</b> or <b>Last-modified</b> header, the following code would receive a 200 and 304 response in the first and second GET requests, repectively:
+
+<pre>
+hotels = Restfulie.at('http://localhost:3000/hotels').get
+hotels = hotels.self
+</pre>
+
+In order to make it work properly, the server needs to implement the resource rendering process correctly with the two mentioned headers. Fortunately, Restfulie's <b>render_collection</b> method automatically does that for us, therefore our hotels list rendering process already returns a 304 response:
+
+<pre>render_collection @hotels do |item|
+  item.to_xml :controller => self, :only => [:name, :room_count], :skip_instruct => true
+end
+</pre>
+
+In the client, the self invocation will use both the received <b>Etag</b> and <b>Last-modified</b> headers:
+
+<pre>
+hotels = Restfulie.at('http://localhost:3000/hotels').get
+</pre>
 
 h3. Last-modified
 
@@ -82,9 +107,7 @@ Cache-Control: private, max-age=0, must-revalidate
 
 <blockquote>TODO diagram on Last-modified</blockquote>
 
-h3. ETag
-
-Finally, an 'ETag' header on the response gives a identification that works in the same way that 'Last-modified' does, sending a 'If-None-Match' header in the request and receing a "304 Not Modified" response.
+An 'ETag' header on the response gives a identification that works in the same way that 'Last-modified' does, sending a 'If-None-Match' header in the request and receing a "304 Not Modified" response.
 
 The first request retrieves the resources:
 
@@ -121,41 +144,7 @@ Cache-Control: private, max-age=0, must-revalidate
 
 <blockquote>TODO diagram on ETag</blockquote>
 
-h2. Conditional getting
-
-Restfulie allows the use of conditional resource retrieval through the use of <b>Etag</b> and <b>Last-modified</b> headers. Once a resource is retrieved, it keeps within its object both reponse values, so it can use them to retrieve the resource again, when required.
-
-Restfulie will use those headers by default if any <b>self</b> relation is invoked as a method, therefore if the server implements an <b>Etag</b> or <b>Last-modified</b> header, the following code would receive a 200 and 304 response in the first and second GET requests, repectively:
-
-<pre>
-hotels = Restfulie.at('http://localhost:3000/hotels').get
-hotels = hotels.self
-</pre>
-
-In order to make it work properly, the server needs to implement the resource rendering process correctly with the two mentioned headers. Fortunately, Restfulie's <b>render_collection</b> method automatically does that for us, therefore our hotels list rendering process already returns a 304 response:
-
-<pre>render_collection @hotels do |item|
-  item.to_xml :controller => self, :only => [:name, :room_count], :skip_instruct => true
-end
-</pre>
-
-In the client, the self invocation will use both the received <b>Etag</b> and <b>Last-modified</b> headers:
-
-<pre>
-hotels = Restfulie.at('http://localhost:3000/hotels').get
-</pre>
-<pre>
-Request here
-GET
-</pre>
-
-<pre>
-hotels = hotels.self
-puts hotels.web_response.code
-</pre>
-<pre>
-Response
-</pre>
+h3. Importance
 
 Conditional resource retrieval is of the most importance in highly scalable systems based on REST architectures: its result allows same latency but lower bandwidth consumption, therefore a faster response is available.
 
