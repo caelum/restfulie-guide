@@ -104,6 +104,8 @@ h2. Custom behavior on undesired responses
 
 h2. Typical reactions
 
-<blockquote>TODO Typical reactions on common responses as Conditional Update</blockquote>
-
 h2. Conditional update
+
+Conditional updates are good, for example, to break the delegation chain by intermediate layers as proxies that can decide upon a resource last modified or etag header unsuccessful match.
+
+<blockquote>implement</blockquote>

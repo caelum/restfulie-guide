@@ -711,14 +711,7 @@ Restfulie provides callbacks for every possible operation with resources.
 
 h2. Full resource update
 
-<blockquote>explain in a later chapter</blockquote>
-
-
-
-
-
-
-
+<blockquote>TODO explain in a later chapter</blockquote>
 
 h2. Removing hotels
 
@@ -784,26 +777,13 @@ hotel.destroy
 
 Because the hotels entry point gave us an hotel feed, Restfulie knowns that the first entry's URI is http://localhost:3000/hotels/1 and will send a DELETE request	upon the <strong>destroy</strong> method invocation.
 
-h2. Deleting a resource based on a non-atom entry representation
+h2. Removing non-atom entry representations
 
-<blockquote>TODO nasty section name</blockquote>
 <blockquote>TODO explain this section</blockquote>
-
-
-
-
-
 
 h2. Learning more about our resources
 
 <blockquote>TODO the verb OPTIONS</blockquote>
-
-
-
-
-
-
-
 
 h2. Flight routes
 

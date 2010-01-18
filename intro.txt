@@ -6,3 +6,5 @@ Practical REST: Web Integrated Systems without Webservices
 - An open hotel and daily tour database and booking system.
 - A web based air ticket selling system
 - A system that accesses both systems, providing trip planning.
+
+
