@@ -2,17 +2,21 @@ h2. Caches
 
 Because our system is stateless, we can scale it by caching copies of our resource representation in layers staying between the client and the server, typical proxies that are shared by multiple users, and the client tier itself, local copies stored in a local cache.
 
-In the human web cache is controlled through HTTP cache headers, and resource representation copies are stored both in remote proxies and the local browser.
+In the human web cache is controlled through HTTP cache headers [reference to http specification, cache headers], and resource representation copies are stored both in remote proxies and the local browser.
 
 <blockquote>TODO image here</blockquote>
 
-The amazing power that HTTP gives us when correctly making use of such headers is potentialized due to possibility of inserting remote shared caches (proxies) anywhere, as just prior to entering a company's internal network:
+The amazing power that HTTP gives us when making correctly use of such headers is leveraged due to possibility of inserting remote shared caches (proxies) anywhere, as just prior to entering a company's internal network:
 
 <blockquote>TODO image here</blockquote>
 
-Or even within the tier that provides the services, adding a cache layer for all users:
+Another technique is to add a cache layer for all application clients within the server tier, so every one of them benefit from requests made previously.
 
 <blockquote>TODO image here</blockquote>
+
+All those options are available because the HTTP protocol allows the inclusion of new intermediate layers without any knowledge of the clients and already provides cache control capabilities in its own protocol, as the Roy's REST architecture description explains.
+
+Both local cache support on clients and conditional request support on the client and server are an important point for any REST api, without them, clients will perceive longer response times and servers are able to cope with fewer clients.
 
 h2. Restfulie local cache
 
@@ -40,8 +44,7 @@ Content-Type: application/atom+xml; charset=utf-8
 </hotel>
 </pre>
 
-This is supported by default, without any extra effort from the client developer.
-
+Local cache is supported by default by Restfulie, without any extra effort from the client developer.
 
 h2. Conditional getting
 
@@ -284,7 +287,17 @@ Bandwidth:
 
 Total time:
 
-h2. Benchmarking distributed content
+h2. Summing up
+
+Using what the entire http stack provides us, our system has scaled from answering clients within XXXXXXXXXXXXXXX.
+
+According to CPU usage, there was a X% increase, and at last, a bandwidth economy of XXXX.
+
+As we have seen in this chapter, using these resources involves no extra costs or software acquisition, and at the same delivers an increase of YYY% to XXX% according to this usage scenario. Restfulie support to cache related headers comes with no effort to the end user, while load balancers and reverse proxies are easy to find and configure.
+
+h2. Distributed content
+
+h3. Benchmarking distributed content
 
 In a connected web, it is quite common to find applications that relate to other ones on the net. A system that syndicates content from other hotels might delegate the ordering process to such systems, by providing specific URIs when executing the hotel resource retrieval.
 
@@ -334,7 +347,7 @@ Bandwidth:
 
 Total time:
 
-h2. Benchmarking systems exposing published content
+h3. Benchmarking systems exposing published content
 
 The final option that we will show in this book is to create systems with custom feeds that provide information on their own hotels.
 
