@@ -100,12 +100,55 @@ puts "The response content type was #{hotel.web_response['Content-type']}"
 
 h2. Custom behavior on undesired responses
 
-<blockquote>TODO implement custom exceptions on specific response codes</blockquote>
+Sometimes we want to customize the behavior for specific response codes. For instance a client whishing to raise exceptions if any server (5xx) or client (4xx) error code is issued by any request, he can configure Restfulie by registering special callbacks for specific error code ranges:
+
+<pre>
+Restfulie::Client::ResponseHandler.register(400, 599) do |response|
+	Restfulie::Client::ResponseHandler.raise_error(response)
+end
+</pre>
+
+Because Restfulie::Client::ResponseHandler contains a set of methods with custom behaviour for handling response codes, one can register custom blocks that will be invoked when such codes are returned.
+
+Now, a 404 error will raise an exception, as the programmer wished:
+
+<pre>
+Restfulie::Client::ResponseHandler.register(400, 599) do |response|
+	Restfulie::Client::ResponseHandler.raise_error(response)
+end
+
+hotel = Restfulie.at("http://www.google.com/hotels/5").get
+</pre>
+
+Any generic behavior can be implemented through the Ruby block which is treated as a callback for the specified range.
 
 h2. Typical reactions
+
+<blockquote>TODO is there any typical behavior?</blockquote>
 
 h2. Conditional update
 
 Conditional updates are good, for example, to break the delegation chain by intermediate layers as proxies that can decide upon a resource last modified or etag header unsuccessful match.
 
 <blockquote>implement</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

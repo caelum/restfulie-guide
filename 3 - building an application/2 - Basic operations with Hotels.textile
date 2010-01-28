@@ -289,23 +289,6 @@ Although the *render_resource* method handled content negotiation and generated 
 
 By following this path of new a media type creation for every different type of information retrieval, the project will end up with a high number of custom media types, making them useless for other systems and losing the ability to be understood by a larger number of clients.
 
-h2. Free caching and 304 support
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 h2. The hotel list Atom feed
 
 If we create an atom feed for our hotels, we are able to use a well-known and standard media type that other clients are already capable of understanding.
@@ -372,7 +355,7 @@ h2. Hypermedia in our resource list
 
 Another approach to creating a list of resources is to let hypermedia drive our client application and represent the list of resources as connections that can be accessed through their own URIs.
 
-Typical formats that allow representations with hypermedia support are application/xhtml with our own microformat:
+Typical formats that allow representations with hypermedia support are application/xhtml with our custom format:
 
 <blockquote>TODO add links here</blockquote>
 

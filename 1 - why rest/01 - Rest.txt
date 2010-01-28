@@ -1,4 +1,0 @@
-The aim of this book is not to discuss what is or what is not rest, but to show how we can create distributed systems that benefit in various ways from the web once it starts using it as its infrastructure.
-
-Most of the ideas behind the actual implementations come from Jim Webber, Ian Robinson and Savas xxxx's book: "".
-

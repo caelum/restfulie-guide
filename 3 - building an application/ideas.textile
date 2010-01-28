@@ -1,3 +1,11 @@
+- restfulie 0.7 release
+- sequence diagrams on invocations
+- atom implementation
+- service entry point
+- opensearch implementation
+- george data
+
+
 > This is key. The client isn't "waiting to do the next thing". It's not
 > got a "list of things to do", and going through them one by one.
 > Rather it has a list of guideposts that it's told to follow, and the
@@ -24,3 +32,22 @@ note: keep both implementations: deleteand softdelete, with soft delete as make 
 - capitulo que seria em java
 - capitulo que seria em c#
 
+
+- use custom hashes
+
+
+CHAPTER	PAGES
+2.1				1
+3.1				2
+3.2				10
+3.3				2
+3.6				5
+3.9				6
+i have		26
+
+20% img   
+* 5/3    
+equal *2= 52 
+=========
+
+i need		300
