@@ -18,7 +18,13 @@ cd hotel-system
 But Rails standard projects still do not support hypermedia resources, therefore its required to add restfulie gem at **hotel-system/config/enviroment.rb**:
 
 <pre>
-config.gem "restfulie", :version => ">= 0.6.0"
+config.gem "restfulie", :version => "0.6.0", :source => "http://gemcutter.org"
+</pre>
+
+Because gems handles gem dependencies, one single command shall download all required gems: restfulie and its dependencies.
+
+<pre>
+rake gems:install
 </pre>
 
 h2. Rails foregery protection
