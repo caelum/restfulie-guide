@@ -6,7 +6,7 @@ Rails provides support for CRUD over HTTP using request parameters in order to p
 
 For the client, it means that he is supposed to make more use of request bodies instead of request parameters, while the server will worry about understanding such typically well-known representations.
 
-[section  Our hotel media-type]
+[section  Our hotels]
 
 We start creating our hotel model with three fields describing it, its name, city and total number of rooms, using Rail's scaffold feature that also generates some basic controllers:
 
@@ -36,13 +36,13 @@ end
 Once such media type has been configured, a valid representation of our hotel, showing a relation to a similar hotel by using atom's link element, which describe a relation to another resource, with its meaning described by its rel attribute.
 Such attribute comes from Atom's specification and if the rel element does not follow one of the possible values described by that file, it should be prefixed with its namespace:
 
-[ruby]<hotel>
+[xml]<hotel>
 	<name>Caelum Objects Hotel</name>
 	<room_count>220</roomt_count>
 	<city>Sao Paulo</city>
 	<link rel="http://caelumobjects.com/hotels/similar" href="http://localhost:3000/hotels/2" />
 </hotel>
-[/ruby]
+[/xml]
 
 In such case, our hotel resource has a similar one that can be retrieved by sending a GET request to <b>http://localhost:3000/hotels/2</b>.
 
@@ -64,8 +64,6 @@ This code will generate a response 201 with the resource location in the **Locat
 
 The controller still needs to check if the process was successfully completed or not and, if something goes wrong, render the related error messages.
 
-<blockquote>TODO check unprocessable entity is a valid response? and its body?</blockquote>
-
 [ruby]class HotelsController < ApplicationController::Base
 	def create
 	    @hotel = Restfulie.from request
@@ -78,25 +76,25 @@ The controller still needs to check if the process was successfully completed or
 end
 [/ruby]
 
-<blockquote>TODO image with both paths: everything ok, something wrong, show representation on image</blockquote>
+If the server wants to avoid one extra request-response trip, it can return the resource content with the 201 return code and the client will not need another request to retrieve this information:
 
-If the server wants to avoid one extra request-response trip, it can return the resource content with the XXX return code and the client will not need another request to retrieve this information.
+<TOLINK imagem com sequencia de 200, 201 e unprocessable>
 
 Note that render_created will already do it for us, returning a response as:
 
-<blockquote>
+[box]
 There is one major validation step missing in the code above: the object created invoking *Restfulie.from* might not be a hotel and we are not checking its content-type. In order to check if the media-type sent matches the expected one:
 
 [ruby]valid = Restfulie::MediaType.supports?(request.headers['CONTENT_TYPE']) &&
        	Restfulie::MediaType.media_type(request.headers['CONTENT_TYPE']) == Hotel
 [/ruby]
-</blockquote>
+[box]
 
-[section  Default behaviour]
+[section  Default behavior]
 
-The typical behaviour for CRUD systems following REST is to create resources through **post** by translating the resource to domain models, saving them to the database and responding with a 201.
+The typical behavior for CRUD systems following REST is to create resources through **post** by translating the resource to domain models, saving them to the database and responding with a 201.
 
-When using Restfulie, those common cases are supported by default if your controller includes the **RestController** module, which includes the behaviour displayed so far:
+When using Restfulie, those common cases are supported by default if your controller includes the **RestController** module, which includes the behavior displayed so far:
 
 [ruby]class HotelsController < ApplicationController
   include Restfulie::Server::RestController
@@ -107,7 +105,7 @@ When using Restfulie, those common cases are supported by default if your contro
 end
 [/ruby]
 
-<blockquote>TODO describe client, move client code up?</blockquote>
+Because the application set up so far a POST entry point that allows hotel creation, the client can access it by using Restfulie's API with *one line of code*, which invokes the create method:
 
 [ruby]hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo", :room_count => 3}
 
@@ -118,24 +116,17 @@ puts "Response was #{hotel.web_response}"
 
 [section  Accessing headers and the response itself]
 
-Sometimes the clients want to access the http response information itself and you can do it with Restfulie through the web_response method which is the Net::HTTPResponse object itself:
+The above example even shows how to access the response object itself, which has been enhanced by Restfulie in order to provide extra useful methods for REST clients.
+
+Sometimes those clients want to access the http response information itself and you can do it with Restfulie through the web_response method which is the Net::HTTPResponse object itself:
 
 [ruby]hotel = Restfulie.at('http://localhost:30000/hotels/1').get
 puts "Hotel created at #{hotel.web_response['Content-type']}"
 [/ruby]
 
-<blockquote>
-You can remove both new and create methods from your HotelsController as they are not needed.
-</blockquote>
-
-
-
-
-
-
-
-
-
+<box>
+Now you can remove both new and create methods from your HotelsController as they are not needed.
+</box>
 
 [section  Evolving the server]
 
@@ -185,6 +176,10 @@ Restfulie Rails and C# client implementation supports the creation of dynamic me
 
 REST APIs shall not deal only with HTTP headers, responses and URIs but implement content type negotiation and default serialization behavior that pushes developers towards REST systems, otherwise the developer is still open to write a "restless" system with a Rest-ready API.
 
+[box]
+Again, other architecture styles might support forward and backward compatibility if thought about it previously, but unfortunately most developers nowadays still have access and are teach to use fixed contracts which do not allow system evolution. With the strength of agile methods and the better understanding of the community that systems evolve and maintaining them when they are not ready for that is expensive, REST frameworks that force backward and forward compatibility, along with teaching them from the start, earn extra points.
+[/box]
+
 [section  Mapping responses to our domain]
 
 In most cases we want to map resource access responses to our domain models, so in our case we want to create a class
@@ -201,30 +196,15 @@ And now we can read it from a specific URI:
 puts "Hotel #{hotel.name} retrieved"
 [/ruby]
 
-[section  Content type]
+[note]
+Content-type section
 
-<blockquote>
 TODO
 - Most of the web request [need reference] is based on data retrieval correctly using the GET verb.
 - Content type negotiation: if the existing resource can be represented in that media-type, gives it
 - Restfulie knows how to transform to xml and json by default
 - Otherwise, complain
-</blockquote>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+[/note]
 
 [section  Retrieving a list of resources]
 
@@ -266,7 +246,7 @@ Accept: application/xml
 </hotels>
 [/ruby]
 
-Although the *render_resource* method handled content negotiation and generated valid *application/xml* content, in order to add extra behaviour or flow control to the list of hotels we are required to create a new media type, one that encapsulates many instances of hotels.
+Although the *render_resource* method handled content negotiation and generated valid *application/xml* content, in order to add extra behavior or flow control to the list of hotels we are required to create a new media type, one that encapsulates many instances of hotels.
 
 By following this path of new a media type creation for every different type of information retrieval, the project will end up with a high number of custom media types, making them useless for other systems and losing the ability to be understood by a larger number of clients.
 
@@ -336,7 +316,7 @@ Another approach to creating a list of resources is to let hypermedia drive our 
 
 Typical formats that allow representations with hypermedia support are application/xhtml with our custom format:
 
-<blockquote>TODO add links here</blockquote>
+<box>TOLINK add links here</box>
 
 [ruby]<?xml version="1.0" encoding="UTF-8"?>
 <html>
@@ -412,8 +392,7 @@ In this case, our atom feed will look like:
 	</feed>
 [/ruby]
 
-With such representation, one can retrieve the actual resource and act with it after accessing its URI. In the client side,
-the code will resemble navigating through connected resources:
+With such representation, one can retrieve the actual resource and act with it after accessing its URI. In the client side, the code will resemble navigating through connected resources:
 
 [ruby]	hotels = Restfulie.at(HOTELS_ENTRY_POINT).get
 	hotel = hotels[1]
@@ -485,7 +464,7 @@ Given the hotel scenario, we could create different resources:
 <li>http://caelumhotels.com/special</li>
 </ul>
 
-<blockquote>myself/bookings should be my username itself due to caching capabilities for intermediate layers</blockquote>
+<box>myself/bookings should be my username itself due to caching capabilities for intermediate layers</box>
 
 And finally an aggregating page:
 
@@ -515,7 +494,7 @@ In a web were most data can be cached and does not become stale so fast, this te
 
 All one needs to do is <a href="http://www.mnot.net/cache_docs/">properly use the http headers for caching</a>.
 
-<blockquote>Remember that if your client supports either parallel requests to the server and/or keep-alive connection, the results might be even better.</blockquote>
+<box>Remember that if your client supports either parallel requests to the server and/or keep-alive connection, the results might be even better.</box>
 
 Pretty much in the same way as with the human web, a distributed system using the web as its infrastructure will <a href="http://www.mnot.net/cache_docs/">gain the same cache benefits </a>as long as they implement correct caching policies through http headers (and correct http verbs).
 
@@ -525,11 +504,11 @@ This approach results in changes applied to one resource not affecting cached re
 
 Sometimes the decision whether to change latency for scalability might depend on how you think your clients will use your resources: in the human web mentioned above, the developer knew exactly how its clients would access it.
 
-<blockquote>Remember: there is zero latency for unexpired resources and there is small latency for retrieving cached versions of a resource from a shared proxy</blockquote>
+<box>Remember: there is zero latency for unexpired resources and there is small latency for retrieving cached versions of a resource from a shared proxy</box>
 
-<blockquote>TODO image shared proxy: show the advantage</blockquote>
+<box>TOLINK image shared proxy: show the advantage</box>
 
-In distributed systems using REST, guessing how resources will be used can be dangerous as it allows you to tight couple yourself to this behaviour while published resources can and would be used in unforeseen ways.
+In distributed systems using REST, guessing how resources will be used can be dangerous as it allows you to tight couple yourself to this behavior while published resources can and would be used in unforeseen ways.
 
 Giving information that will help most cases is fine and providing links to further resources details allow you to balance between latency and scalability - due to caching - as you wish.
 
@@ -537,7 +516,7 @@ Giving information that will help most cases is fine and providing links to furt
 
 This is only possible because we have <a href="http://guilhermesilveira.wordpress.com/2009/12/08/hypermedia-making-it-easier-to-create-dynamic-contracts/">signed dynamic contracts with our clients.</a> They expect us to follow some formal format definition (<a href="http://www.w3.org/TR/xhtml1/">defined in xhtml</a>) and processes. How our processes are presented within our representations is the dynamic part of the contract.
 
-While the fixed part can be validated<a href="http://www.w3.org/XML/Schema"> with the use of schema validators</a>, the dynamic part - the process - which is guided by our server needs to be validated through testing the behaviour of our applications: asserting that hypermedia guided transitions should be reflected in our application state.
+While the fixed part can be validated<a href="http://www.w3.org/XML/Schema"> with the use of schema validators</a>, the dynamic part - the process - which is guided by our server needs to be validated through testing the behavior of our applications: asserting that hypermedia guided transitions should be reflected in our application state.
 
 [section  Progressive enhancement]
 
@@ -566,7 +545,7 @@ end
 
 [section  Hotel atom entry]
 
-<blockquote>TODO explain how to use atom to access every hotel.</blockquote>
+<box>TOLINK explain how to use atom to access every hotel.</box>
 
 [section  Updating hotels]
 
@@ -655,13 +634,11 @@ Our system does not need to execute any parsing on the hash prior to updating th
 end
 [/ruby]
 
-[section  Other callbacks]
-
+[note]
+TODO
+Partial resource update section
 Restfulie provides callbacks for every possible operation with resources.
-
-[section  Full resource update]
-
-<blockquote>TODO explain in a later chapter</blockquote>
+[/note]
 
 [section  Removing hotels]
 
@@ -676,7 +653,7 @@ end
 
 Because Rails already answer with a <b>404 not found</b> response if the model is not not found, we do not need a conditional check.
 
-Once again, RestfulieController default <b>destroy</b> behaviour is to locate the resource and remove it from the database, answering with a <b>404 not found</b> if it is not found. Once our controller includes RestfulieController's behaviour, there is no need to write the <b>destroy</b> method again, only if we want to customize it:
+Once again, RestfulieController default <b>destroy</b> behavior is to locate the resource and remove it from the database, answering with a <b>404 not found</b> if it is not found. Once our controller includes RestfulieController's behavior, there is no need to write the <b>destroy</b> method again, only if we want to customize it:
 
 [ruby]class HotelsController < ApplicationController
   include Restfulie::Server::RestController
@@ -722,13 +699,11 @@ hotel.destroy
 
 Because the hotels entry point gave us an hotel feed, Restfulie knowns that the first entry's URI is http://localhost:3000/hotels/1 and will send a DELETE request	upon the <strong>destroy</strong> method invocation.
 
-[section  Removing non-atom entry representations]
-
-<blockquote>TODO explain this section</blockquote>
-
-[section  Learning more about our resources]
-
-<blockquote>TODO the verb OPTIONS</blockquote>
+[note]
+sections:
+Removing non-atom entry representations
+Learning more about our resources (OPTIONS)
+[/note]
 
 [section  Flight routes]
 
@@ -764,7 +739,7 @@ And insert a few flights through a custom migration:
 end
 [/ruby]
 
-<blockquote>Note: online travel agencies will usually locate airports near your city prior to executing your search.</blockquote>
+<box>Note: online travel agencies will usually locate airports near your city prior to executing your search.</box>
 
 We will also add new hotels in Miami and Los Angeles to our travel system:
 
