@@ -1,4 +1,4 @@
-h2. Caches
+[section  Caches]
 
 Because our system is stateless, we can scale it by caching copies of our resource representation in layers staying between the client and the server, typical proxies that are shared by multiple users, and the client tier itself, local copies stored in a local cache.
 
@@ -18,7 +18,7 @@ All those options are available because the HTTP protocol allows the inclusion o
 
 Both local cache support on clients and conditional request support on the client and server are an important point for any REST api, without them, clients will perceive longer response times and servers are able to cope with fewer clients.
 
-h2. Restfulie local cache
+[section  Restfulie local cache]
 
 The simplest cache support that can be implemented in HTTP client libraries is related to cache headers given by servers, specific hints that allows the client to keep a cached representation as the up-to-date revision.
 
@@ -28,7 +28,7 @@ The XXXX header notifies the client that until this expiration time, there is no
 
 The first request retrieves the resources:
 
-<pre>GET http://localhost:3000/hotels HTTP/1.1</pre>
+<pre>GET http://localhost:3000/hotels HTTP/1.1[/ruby]
 
 And the server response includes the cache-control header:
 
@@ -42,42 +42,40 @@ Content-Type: application/atom+xml; charset=utf-8
 	<name>Caelum Objects</hotel>
 	<room_count>10</room_count>
 </hotel>
-</pre>
+[/ruby]
 
 Local cache is supported by default by Restfulie, without any extra effort from the client developer.
 
-h2. Conditional getting
+[section  Conditional getting]
 
 Restfulie allows the use of conditional resource retrieval through the use of <b>Etag</b> and <b>Last-modified</b> headers. Once a resource is retrieved, it keeps within its object both reponse values, so it can use them to retrieve the resource again, when required.
 
 Restfulie will use those headers by default if any <b>self</b> relation is invoked as a method, therefore if the server implements an <b>Etag</b> or <b>Last-modified</b> header, the following code would receive a 200 and 304 response in the first and second GET requests, repectively:
 
-<pre>
-hotels = Restfulie.at('http://localhost:3000/hotels').get
+[ruby]hotels = Restfulie.at('http://localhost:3000/hotels').get
 hotels = hotels.self
-</pre>
+[/ruby]
 
 In order to make it work properly, the server needs to implement the resource rendering process correctly with the two mentioned headers. Fortunately, Restfulie's <b>render_collection</b> method automatically does that for us, therefore our hotels list rendering process already returns a 304 response:
 
 <pre>render_collection @hotels do |item|
   item.to_xml :controller => self, :only => [:name, :room_count], :skip_instruct => true
 end
-</pre>
+[/ruby]
 
 In the client, the self invocation will use both the received <b>Etag</b> and <b>Last-modified</b> headers:
 
-<pre>
-hotels = Restfulie.at('http://localhost:3000/hotels').get
-</pre>
+[ruby]hotels = Restfulie.at('http://localhost:3000/hotels').get
+[/ruby]
 
-h3. Last-modified
+[title  Last-modified]
 
 The 'Last-modified' header dictates when the resource was last modified, and this information can be sent back to the server when executing the same request with an extra 'If-Unmodified-Since' header that can be responded with a "304 Not Modified" meaning, again, that the client can stick to the previous response. This will not save on latency but will help with bandwidth consumption and CPU time.
 
 
 The first request retrieves the resources:
 
-<pre>GET http://localhost:3000/hotels/94 HTTP/1.1</pre>
+<pre>GET http://localhost:3000/hotels/94 HTTP/1.1[/ruby]
 
 And the server response includes the <b>Last-modified</b> header:
 
@@ -92,12 +90,12 @@ Last-Modified: Sat, 16 Jan 2010 23:22:10 GMT
 	<name>Caelum Objects</hotel>
 	<room_count>10</room_count>
 </hotel>
-</pre>
+[/ruby]
 
 After the cache policy expires, Restfulie uses the If-Unmodified-Since to request whether the resource changed:
 
 <pre>GET http://localhost:3000/hotels/94 HTTP/1.1
-If-Unmodified-Since: Sat, 16 Jan 2010 23:22:10 GMT</pre>
+If-Unmodified-Since: Sat, 16 Jan 2010 23:22:10 GMT[/ruby]
 
 With a resulting 304:
 
@@ -106,7 +104,7 @@ Connection: close
 Date: Sun, 17 Jan 2010 23:56:24 GMT
 Last-Modified: Sat, 16 Jan 2010 23:22:10 GMT
 Cache-Control: private, max-age=0, must-revalidate
-</pre>
+[/ruby]
 
 <blockquote>TODO diagram on Last-modified</blockquote>
 
@@ -114,7 +112,7 @@ An 'ETag' header on the response gives a identification that works in the same w
 
 The first request retrieves the resources:
 
-<pre>GET http://localhost:3000/hotels/94 HTTP/1.1</pre>
+<pre>GET http://localhost:3000/hotels/94 HTTP/1.1[/ruby]
 
 And the server response includes the etag:
 
@@ -129,12 +127,12 @@ ETag: "d21f1963230d1b690fc6e60912e8eae8"
 	<name>Caelum Objects</hotel>
 	<room_count>10</room_count>
 </hotel>
-</pre>
+[/ruby]
 
 After the cache policy expires, Restfulie uses the ETag to request whether the resource changed:
 
 <pre>GET http://localhost:3000/hotels/94 HTTP/1.1
-If-None-Match: "d21f1963230d1b690fc6e60912e8eae8"</pre>
+If-None-Match: "d21f1963230d1b690fc6e60912e8eae8"[/ruby]
 
 With a resulting 304:
 
@@ -143,11 +141,11 @@ Connection: close
 Date: Sun, 17 Jan 2010 23:56:24 GMT
 ETag: "202c390e89d3212913225901df92955c"
 Cache-Control: private, max-age=0, must-revalidate
-</pre>
+[/ruby]
 
 <blockquote>TODO diagram on ETag</blockquote>
 
-h3. Importance
+[title  Importance]
 
 Conditional resource retrieval is of the most importance in highly scalable systems based on REST architectures: its result allows same latency but lower bandwidth consumption, therefore a faster response is available.
 
@@ -155,58 +153,52 @@ Once multiple users share the same intermediate layers, as a proxy, all benefit 
 
 <blockquote>TODO image with many clients executing request</blockquote>
 
-h2. Benchmarking our system
+[section  Benchmarking our system]
 
 Now that we know how Restfulie will benefit from local caches, http headers and shared caches, we can measure the benefits of adopting such a solution.
 
 First of all, let's write a typical user behavior that will run against our server. The user will retrieve the entire list of hotels and pick the cheapest one, trying to book it:
 
-<pre>
-	hotels = Restfulie.at('http://localhost:3000/hotels').get
+[ruby]	hotels = Restfulie.at('http://localhost:3000/hotels').get
 	find_and_book_cheaper hotels
-</pre>
+[/ruby]
 
 If the cheaper hotel has no room available, the client looks down for the next cheapest hotel, and tries to book it again:
 
-<pre>
-	def find_and_book_cheaper(hotels)
+[ruby]	def find_and_book_cheaper(hotels)
 		cheaper = find_cheaper(hotels)
 		hotels.remove cheaper
 		return find_and_book_cheaper(hotels) if cheaper.available_rooms == 0
 	end
-</pre>
+[/ruby]
 
 Another problem that might arrive is that there is actually no hotels with available rooms, so every the client will give up booking it:
 
-<pre>
-	def find_and_book_cheaper(hotels)
+[ruby]	def find_and_book_cheaper(hotels)
 		return nil if hotels.length == 0
 		cheaper = find_cheaper(hotels)
 		hotels.remove cheaper
 		return find_and_book_cheaper(hotels) if cheaper.available_rooms == 0
 	end
-</pre>
+[/ruby]
 
 Now its time to book the hotel by creating a booking and pay it:
 
-<pre>
-	booking = cheaper.self.book(:days => 10)
+[ruby]	booking = cheaper.self.book(:days => 10)
 	payment = booking.pay(:amount => booking.cost)
-</pre>
+[/ruby]
 
 But the payment process might fail because other clients might have paid for the last available rooms through another website, therefore we need to check whether the response was successful and try to book the following cheaper one if it was not:
 
-<pre>
-	booking = cheaper.self.book(:days => 10)
+[ruby]	booking = cheaper.self.book(:days => 10)
 	receipt = booking.pay(:amount => booking.cost)
 	return find_and_book_cheaper(hotels) unless receipt.is_successful?
 	puts "Successfully booked hotel #{hotel.name}"
-</pre>
+[/ruby]
 
 The entire source code for booking a hotel is available here, with a slightly modified version that counts the number of bookings it has tried:
 
-<pre>
-	def find_and_book_cheaper(hotels, attempts = 1)
+[ruby]	def find_and_book_cheaper(hotels, attempts = 1)
 		return nil if hotels.length == 0
 		cheaper = find_cheaper(hotels)
 		hotels.remove cheaper
@@ -219,7 +211,7 @@ The entire source code for booking a hotel is available here, with a slightly mo
 
 	hotels = Restfulie.at('http://localhost:3000/hotels').get
 	find_and_book_cheaper hotels
-</pre>
+[/ruby]
 
 The above process consists of one initial GET request that retrieves the list of hotels, one extra GET request for each hotel that we shall attempt booking - in order to retrieve all information related to it, and two POST requests for each booking attempt.
 
@@ -229,13 +221,12 @@ When a similar number of booking attempts is executed, we can benchmark our appl
 
 <blockquote>TODO add one more step that local cache will help</blockquote>
 
-h2. Benchmarking after turning off local cache and 304
+[section  Benchmarking after turning off local cache and 304]
 
 The easiest way to turn off support to local cache and 304 for all requests and responses in Restfulie is to change the functions related to such behavior:
 
-<pre>
-	TODO code that opens both modules and turn off such support
-</pre>
+[ruby]	TODO code that opens both modules and turn off such support
+[/ruby]
 
 CPU:
 
@@ -243,13 +234,12 @@ Bandwidth:
 
 Total time:
 
-h2. Benchmarking with local cache
+[section  Benchmarking with local cache]
 
 Now we are ready to run the same test but with support to local caches:
 
-<pre>
-	TODO code that opens one module and turn off 304
-</pre>
+[ruby]	TODO code that opens one module and turn off 304
+[/ruby]
 
 CPU:
 
@@ -257,7 +247,7 @@ Bandwidth:
 
 Total time:
 
-h2. Benchmarking with a reverse proxy
+[section  Benchmarking with a reverse proxy]
 
 And without any modification to Restfulie's sourcecode, we make full use of local cache and 304 responses:
 
@@ -267,7 +257,7 @@ Bandwidth:
 
 Total time:
 
-h2. Benchmarking with a reverse cache
+[section  Benchmarking with a reverse cache]
 
 Optimizing our system even further, we can add a reverse proxy that will parse every request prior to delegating to the server, caching responses whenever possible. Further requests that matches previously cached ones will not even be sent to the server, avoiding CPU processing, but still consuming bandwidth:
 
@@ -279,7 +269,7 @@ Bandwidth:
 
 Total time:
 
-h2. Benchmarking with a load balancer
+[section  Benchmarking with a load balancer]
 
 CPU:
 
@@ -287,7 +277,7 @@ Bandwidth:
 
 Total time:
 
-h2. Summing up
+[section  Summing up]
 
 Using what the entire http stack provides us, our system has scaled from answering clients within XXXXXXXXXXXXXXX.
 
@@ -295,9 +285,9 @@ According to CPU usage, there was a X% increase, and at last, a bandwidth econom
 
 As we have seen in this chapter, using these resources involves no extra costs or software acquisition, and at the same delivers an increase of YYY% to XXX% according to this usage scenario. Restfulie support to cache related headers comes with no effort to the end user, while load balancers and reverse proxies are easy to find and configure.
 
-h2. Distributed content
+[section  Distributed content]
 
-h3. Benchmarking distributed content
+[title  Benchmarking distributed content]
 
 In a connected web, it is quite common to find applications that relate to other ones on the net. A system that syndicates content from other hotels might delegate the ordering process to such systems, by providing specific URIs when executing the hotel resource retrieval.
 
@@ -307,15 +297,14 @@ Because these systems provide an uniform interface for the booking process (pick
 
 Restfulie allows systems to work in the same way by linking to existing resources in other systems. When other systems already exist, one can link to them by defining self relationships on items. For example:
 
-<pre>
-class Hotel
+[ruby]class Hotel
 
 	acts_as_restfulie do |hotel, t|
 		t.self.at('http://caelumobjects/hotels/2')
 	end
 
 end
-</pre>
+[/ruby]
 
 <blockquote>TODO implement such feature</blockquote>
 
@@ -323,23 +312,22 @@ We can simulate two booking systems and such an aggregating one (as Kayak) by ru
 
 <blockquote>TODO image</blockquote>
 
-h3. Creating the aggregating system
+[title  Creating the aggregating system]
 
 Our aggregating system is really simple, containing Hotels that can be registered with a name, room count and URI:
 
-<pre>script/generate scaffold hotel name:string uri:string room_count:int</pre>
+<pre>script/generate scaffold hotel name:string uri:string room_count:int[/ruby]
 
 And we create a relation to the original resource content: the system providing the features that allows clients book hotels:
 
-<pre>
-class Hotel
+[ruby]class Hotel
 
 	acts_as_restfulie do |hotel, t|
 		t.self.at(hotel.uri)
 	end
 
 end
-</pre>
+[/ruby]
 
 CPU:
 
@@ -347,7 +335,7 @@ Bandwidth:
 
 Total time:
 
-h3. Benchmarking systems exposing published content
+[title  Benchmarking systems exposing published content]
 
 The final option that we will show in this book is to create systems with custom feeds that provide information on their own hotels.
 
@@ -359,8 +347,8 @@ In this case, our aggregation system will the cache hotel's name, room count and
 
 <blockquote>TODO image on resource representation expire</blockquote>
 
-<pre>script/generate scaffold hotel name:string uri:string room_count:id expiry_date:datetime</pre>
+<pre>script/generate scaffold hotel name:string uri:string room_count:id expiry_date:datetime[/ruby]
 
 <blockquote>TODO support pubsubhubbub</blockquote>
 
-h2. Polling systems
+[section  Polling systems]

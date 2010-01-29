@@ -1,4 +1,4 @@
-h1. Handling responses
+[chapter  Handling responses]
 
 One of the key aspects of the HTTP protocol is a response code. Clients should typically check a response code prior to deciding its next step related to the resource at hand. The importance of these response codes for clients has been widely accepted and adopted so most client APIs, as RestEasy [reference], Spring [reference] and Jersey's [reference] API, also implement it. This chapter will cover how to handle response codes in the client side using Restfulie.
 
@@ -6,71 +6,65 @@ Another important aspect is to easy access responses headers: in a REST based ap
 
 Restfulie makes it easier to handle response codes and headers due to its default behavior when handling typical responses, that have well expected results.
 
-h2. Independent behavior
+[section  Independent behavior]
 
 Restfulie will automatically de-serialize the result's body, no matter which response code it receives. Assuming a <b>200 OK</b> response was returned, the following code will print the hotel name.
 
-<pre>
-	hotel = Restfulie.at('http://localhost:30000/hotels/1').get
+[ruby]	hotel = Restfulie.at('http://localhost:30000/hotels/1').get
 	puts "Hotel #{hotel.name}"
-</pre>
+[/ruby]
 
 <blockquote><b>HEAD</b> requests do not provide any response body.</blockquote>
 
-h2. 200 OK
+[section  200 OK]
 
 The most typical result a web request can get is a <strong>200 OK</strong>, meaning that the request was successfully processed, according to the HTTP 1.1 specification [reference].
 
 A <b>GET</b>, <b>POST</b> and <b>DELETE</b> request does not add any specific behavior when receiving a <b>200 OK</b> response.
-<pre>
-GET an entity corresponding to the requested resource is sent in the response;
+[ruby]GET an entity corresponding to the requested resource is sent in the response;
 HEAD the entity-header fields corresponding to the requested resource are sent in the response without any message-body;
 POST an entity describing or containing the result of the action;
-</pre>
+[/ruby]
 
 And according to the <strong>PATCH</strong> verb definition [http://tools.ietf.org/html/draft-dusseault-http-patch-16], a 200 OK answer will return the resource new representation, meaning that the modifications took place.
 
-h2. 201 Created
+[section  201 Created]
 
-<pre>
-	The server has fulfilled the request but does not need to return an entity-body, and might want to return updated metainformation.
-</pre>
+[ruby]	The server has fulfilled the request but does not need to return an entity-body, and might want to return updated metainformation.
+[/ruby]
 
 Resources are created through the use of the <strong>POST</strong> verb and include a <strong>Location</strong> header with an URI pointing to this resource address.
 
 Once a server answers such a request with a <strong>201 Created</strong> response, Restfulie will automatically follow the specific URI and retrieve the resource:
 
-<pre>
-	hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo", :room_count => 3}
+[ruby]	hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo", :room_count => 3}
 
 	hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').create(hotel.to_xml(:root => "hotel"))
 
 	puts "Response was #{hotel.web_response}"
-</pre>
+[/ruby]
 
-h2. Undesired responses
+[section  Undesired responses]
 
 In some cases, the result is not exactly what we were desired, a successful 200~299 response code, and our code needs to act accordingly. It is a bad practice to act as if every request execution was a successful one. In the human web, we are constantly checking whether there was any error prior to following a process or browsing further.
 
 The same applies to our client software: it should check whether the response was successful prior to going further and this can be easily achieved by accessing the response code.
 
-<pre>
-	hotel = Restfulie.at('http://localhost:30000/hotels/1').get
+[ruby]	hotel = Restfulie.at('http://localhost:30000/hotels/1').get
 	raise "unable to delete resource" unless hotel.destroy.web_response.code == "200"
 	puts "Hotel #{hotel.name} was deleted"
-</pre>
+[/ruby]
 
 Based on the example above, the object returned by invoking <strong>web_response</strong> provides a method returning the response code, but a <strong>DELETE</strong> operation can also answer with '202 Accepted' and '204 No Content'.
 
 In order to handle all those successful cases (2xx), one can invoke the <strong>is_successful?</strong> method:
 
-<pre>
-	hotel = Restfulie.at('http://localhost:30000/hotels/1').get
+[ruby]	hotel = Restfulie.at('http://localhost:30000/hotels/1').get
 	raise "unable to delete resource" unless hotel.destroy.web_response.is_successful?
 	puts "Hotel #{hotel.name} was deleted"
-</pre>
+[/ruby]
 
-h3. Other results
+[title  Other results]
 
 There is one method available for each group of results defined in the HTTP specification and you can use them to program your client behavior accordingly to your server response.
 
@@ -88,45 +82,42 @@ For example, a <b>301</b> response from a <b>GET</b> request will be automatical
 
 <blockquote>TODO example on how to follow 301</blockquote>
 
-h2. The response and it's headers
+[section  The response and it's headers]
 
 Restfulie provides easy access to the response object and it's header through the <b>web_response</b> and <b>web_response[header_name]</b>:
 
-<pre>
-hotel = Restfulie.at('http://localhost:30000/hotels/1').get
+[ruby]hotel = Restfulie.at('http://localhost:30000/hotels/1').get
 puts "The response code was #{hotel.web_response.code}"
 puts "The response content type was #{hotel.web_response['Content-type']}"
-</pre>
+[/ruby]
 
-h2. Custom behavior on undesired responses
+[section  Custom behavior on undesired responses]
 
 Sometimes we want to customize the behavior for specific response codes. For instance a client whishing to raise exceptions if any server (5xx) or client (4xx) error code is issued by any request, he can configure Restfulie by registering special callbacks for specific error code ranges:
 
-<pre>
-Restfulie::Client::ResponseHandler.register(400, 599) do |response|
+[ruby]Restfulie::Client::ResponseHandler.register(400, 599) do |response|
 	Restfulie::Client::ResponseHandler.raise_error(response)
 end
-</pre>
+[/ruby]
 
 Because Restfulie::Client::ResponseHandler contains a set of methods with custom behaviour for handling response codes, one can register custom blocks that will be invoked when such codes are returned.
 
 Now, a 404 error will raise an exception, as the programmer wished:
 
-<pre>
-Restfulie::Client::ResponseHandler.register(400, 599) do |response|
+[ruby]Restfulie::Client::ResponseHandler.register(400, 599) do |response|
 	Restfulie::Client::ResponseHandler.raise_error(response)
 end
 
 hotel = Restfulie.at("http://www.google.com/hotels/5").get
-</pre>
+[/ruby]
 
 Any generic behavior can be implemented through the Ruby block which is treated as a callback for the specified range.
 
-h2. Typical reactions
+[section  Typical reactions]
 
 <blockquote>TODO is there any typical behavior?</blockquote>
 
-h2. Conditional update
+[section  Conditional update]
 
 Conditional updates are good, for example, to break the delegation chain by intermediate layers as proxies that can decide upon a resource last modified or etag header unsuccessful match.
 
