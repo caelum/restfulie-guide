@@ -84,13 +84,16 @@ Because our resource (a collection) was able to include links to other resources
  
 On the client side, after requesting the representation for all hotels, one can access the add hotel relationship through Restfulie's API:
 
-[code]
+[ruby]
 irb
->> require 'restfulie'
->> hotels = Restfulie.at(HOTELS_ENTRY).get
->> puts "There are currently #{hotels.length} hotels"
->> hotels.add new_hotel
-[/code]
+require 'restfulie/client'
+
+hotels = Restfulie.at(HOTELS_ENTRY).get
+puts "There are currently #{hotels.length} hotels"
+hotels.add new_hotel
+[/ruby]
+
+The first two lines of code are to start irb, <a href="TOLINK">ruby's</a> shell, and to load restfulie's client API.
 
 Due to the use of hypermedia within the resource representation, the POST request sent when invoking <i>hotels.add</i> is enough to create the new resource in the URI provided by the server.
 
@@ -131,36 +134,32 @@ Another approach is to access generic searches as those which implement the Open
 
 Restfulie allows access to such document and open search through method invocations on the client side:
 
-[code]
-irb
->> require 'restfulie'
->> hotels = Restfulie.at(HOTELS_ENTRY).get
->> hotel = hotels.search.at('Sao Paulo').rated(4).sort_by(:price).first
-[/code]
+[ruby]
+hotels = Restfulie.at(HOTELS_ENTRY).get
+hotel = hotels.search.at('Sao Paulo').rated(4).sort_by(:price).first
+[/ruby]
 
 [section The advanced client]
 
 Unfortunately that will not be enough for the second set of clients, that want to book both hotels and flights together:
 
-[code]
-irb
->> require 'restfulie'
->> hotels = Restfulie.at(HOTELS_ENTRY).get
->> hotel = hotels.at('Sao Paulo').rated(4).sort_by(:price).first
->> flight = hotel.city.to('London').at(December.05.2010).first
->> booking = Restfulie.at(BOOKING_ENTRY).post
->> booking.hotels.add hotel
->> booking.flights.add flight
->> confirmation = booking.pay payment
-[/code]
+[ruby]
+hotels = Restfulie.at(HOTELS_ENTRY).get
+hotel = hotels.at('Sao Paulo').rated(4).sort_by(:price).first
+flight = hotel.city.to('London').at(December.05.2010).first
+booking = Restfulie.at(BOOKING_ENTRY).post
+booking.hotels.add hotel
+booking.flights.add flight
+confirmation = booking.pay payment
+[/ruby]
 
 This code is a much richer and powerful example as it uses hypermedia to guide the client through a more complex process, finally finding the requested information as in <i>hotels.at('Sao Paulo').rated(4).sort_by(:price).first</i>
 
 Later, there is an atomic execution which involves more than one request:
-[code]
->> booking.hotels.add hotel
->> booking.flights.add flight
->> confirmation = booking.pay payment
-[/code]
+[ruby]
+booking.hotels.add hotel
+booking.flights.add flight
+confirmation = booking.pay payment
+[/ruby]
 
 All those examples can run after our system is built.
