@@ -84,6 +84,8 @@ Because our resource (a collection) was able to include links to other resources
  
 On the client side, after requesting the representation for all hotels, one can access the add hotel relationship through Restfulie's API:
 
+[note]Diagrams from http://www.websequencediagrams.com/[/note]
+
 [ruby]
 irb
 require 'restfulie/client'
@@ -92,6 +94,41 @@ hotels = Restfulie.at(HOTELS_ENTRY).get
 puts "There are currently #{hotels.length} hotels"
 hotels.add new_hotel
 [/ruby]
+
+[img src="2/resource-retrieval.jpg"]
+
+[note]
+client->restfulie: get
+restfulie->/hotels: GET
+note right of /hotels: content negotiation
+note right of /hotels: generates a list of all hotels
+/hotels->restfulie: hotels representation
+note right of restfulie: deserializing
+restfulie->hotels: create array
+hotels->client: all hotels are available
+[/note]
+
+[img src="2/resource-creation-and-retrieval.jpg"]
+
+[note]
+client->restfulie: get
+restfulie->/hotels: GET
+note right of /hotels: content negotiation
+note right of /hotels: generates a list of all hotels
+/hotels->restfulie: hotels representation
+note right of restfulie: deserializing
+restfulie->hotels: create array
+hotels->client: all hotels are available
+
+client->restfulie: add
+restfulie->/hotels: POST
+note right of /hotels: creates a new hotel
+/hotels->restfulie: 201 new hotel location
+restfulie->/hotel/541: GET
+note right of /hotels: retrieves the new hotel representation
+/hotel/541->restfulie: hotel representations
+restfulie->client: hotel
+[/note]
 
 The first two lines of code are to start irb, <a href="TOLINK">ruby's</a> shell, and to load restfulie's client API.
 

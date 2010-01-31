@@ -1,18 +1,18 @@
 [section  Caches]
 
-Because our system is stateless, we can scale it by caching copies of our resource representation in layers staying between the client and the server, typical proxies that are shared by multiple users, and the client tier itself, local copies stored in a local cache.
+Because our system is stateless, we can scale it by caching copies of our resource representation in layers staying between the client and the server, typical proxies that are shared by multiple users, and the client tier itself, and finally, local copies stored in a local cache.
 
 In the human web cache is controlled through HTTP cache headers [reference to http specification, cache headers], and resource representation copies are stored both in remote proxies and the local browser.
 
-<blockquote>TODO image here</blockquote>
+[note]TODO image here[/note]
 
 The amazing power that HTTP gives us when making correctly use of such headers is leveraged due to possibility of inserting remote shared caches (proxies) anywhere, as just prior to entering a company's internal network:
 
-<blockquote>TODO image here</blockquote>
+[note]TODO image here[/note]
 
 Another technique is to add a cache layer for all application clients within the server tier, so every one of them benefit from requests made previously.
 
-<blockquote>TODO image here</blockquote>
+[note]TODO image here[/note]
 
 All those options are available because the HTTP protocol allows the inclusion of new intermediate layers without any knowledge of the clients and already provides cache control capabilities in its own protocol, as the Roy's REST architecture description explains.
 
@@ -24,7 +24,7 @@ The simplest cache support that can be implemented in HTTP client libraries is r
 
 The XXXX header notifies the client that until this expiration time, there is no need to execute a request at all: the current representation can be considered the up-to-date one.
 
-<blockquote>TODO image without the request</blockquote>
+[note]TODO image without the request[/note]
 
 The first request retrieves the resources:
 
@@ -106,7 +106,7 @@ Last-Modified: Sat, 16 Jan 2010 23:22:10 GMT
 Cache-Control: private, max-age=0, must-revalidate
 [/ruby]
 
-<blockquote>TODO diagram on Last-modified</blockquote>
+[note]TODO diagram on Last-modified[/note]
 
 An 'ETag' header on the response gives a identification that works in the same way that 'Last-modified' does, sending a 'If-None-Match' header in the request and receing a "304 Not Modified" response.
 
@@ -143,7 +143,7 @@ ETag: "202c390e89d3212913225901df92955c"
 Cache-Control: private, max-age=0, must-revalidate
 [/ruby]
 
-<blockquote>TODO diagram on ETag</blockquote>
+[note]TODO diagram on ETag[/note]
 
 [title  Importance]
 
@@ -151,7 +151,7 @@ Conditional resource retrieval is of the most importance in highly scalable syst
 
 Once multiple users share the same intermediate layers, as a proxy, all benefit from one's single cached response containing a "shareable" resource representation.
 
-<blockquote>TODO image with many clients executing request</blockquote>
+[note]TODO image with many clients executing request[/note]
 
 [section  Benchmarking our system]
 
@@ -219,7 +219,7 @@ A client that successfully books his first attempted hotel will execute a total 
 
 When a similar number of booking attempts is executed, we can benchmark our application by measuring either amount of cpu process used on all clients + amount of cpu process used on the server, the amount of bandwidth sent and received through all requests or the total amount of time it took between the first client started requesting and the last one finished it process.
 
-<blockquote>TODO add one more step that local cache will help</blockquote>
+[note]TODO add one more step that local cache will help[/note]
 
 [section  Benchmarking after turning off local cache and 304]
 
@@ -261,7 +261,7 @@ Total time:
 
 Optimizing our system even further, we can add a reverse proxy that will parse every request prior to delegating to the server, caching responses whenever possible. Further requests that matches previously cached ones will not even be sent to the server, avoiding CPU processing, but still consuming bandwidth:
 
-<blockquote>TODO image</blockquote>
+[note]TODO image[/note]
 
 CPU:
 
@@ -306,11 +306,11 @@ Restfulie allows systems to work in the same way by linking to existing resource
 end
 [/ruby]
 
-<blockquote>TODO implement such feature</blockquote>
+[note]TODO implement such feature[/note]
 
 We can simulate two booking systems and such an aggregating one (as Kayak) by running three different instances of our hotels system. The first two, systems A and B, are responsible for some specific hotels, while system C controls all queries.
 
-<blockquote>TODO image</blockquote>
+[note]TODO image[/note]
 
 [title  Creating the aggregating system]
 
@@ -339,16 +339,16 @@ Total time:
 
 The final option that we will show in this book is to create systems with custom feeds that provide information on their own hotels.
 
-<blockquote>TODO image with every client's feed</blockquote>
+[note]TODO image with every client's feed[/note]
 
 Those client systems support a publisher-subscriber protocol called <b>pubsubhubbub</b> that notifies the aggregation system every time a new hotel is added.
 
 In this case, our aggregation system will the cache hotel's name, room count and URI and use the provided information when users execute their searches. Later when the resource representation expires, any further usage of such hotel requires a new request to the original resource URI, as the diagram shows.
 
-<blockquote>TODO image on resource representation expire</blockquote>
+[note]TODO image on resource representation expire[/note]
 
 <pre>script/generate scaffold hotel name:string uri:string room_count:id expiry_date:datetime[/ruby]
 
-<blockquote>TODO support pubsubhubbub</blockquote>
+[note]TODO support pubsubhubbub[/note]
 
 [section  Polling systems]
