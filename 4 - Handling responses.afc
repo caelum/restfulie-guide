@@ -21,8 +21,10 @@ Restfulie will automatically de-serialize the result's body, no matter which res
 The most typical result a web request can get is a <strong>200 OK</strong>, meaning that the request was successfully processed, according to the HTTP 1.1 specification [reference].
 
 A <b>GET</b>, <b>POST</b> and <b>DELETE</b> request does not add any specific behavior when receiving a <b>200 OK</b> response.
-[ruby]GET an entity corresponding to the requested resource is sent in the response;
-HEAD the entity-header fields corresponding to the requested resource are sent in the response without any message-body;
+[ruby]
+GET an entity corresponding to the requested resource is sent in the response;
+HEAD the entity-header fields corresponding to the requested resource are sent
+	in the response without any message-body;
 POST an entity describing or containing the result of the action;
 [/ruby]
 
