@@ -32,7 +32,9 @@ And according to the <strong>PATCH</strong> verb definition [http://tools.ietf.o
 
 [section  201 Created]
 
-[ruby]	The server has fulfilled the request but does not need to return an entity-body, and might want to return updated metainformation.
+[ruby]
+The server has fulfilled the request but does not need to return an entity-body,
+	and might want to return updated metainformation.
 [/ruby]
 
 Resources are created through the use of the <strong>POST</strong> verb and include a <strong>Location</strong> header with an URI pointing to this resource address.
@@ -41,7 +43,8 @@ Once a server answers such a request with a <strong>201 Created</strong> respons
 
 [ruby]	hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo", :room_count => 3}
 
-	hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').create(hotel.to_xml(:root => "hotel"))
+	hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml')
+					 .create(hotel.to_xml(:root => "hotel"))
 
 	puts "Response was #{hotel.web_response}"
 [/ruby]
