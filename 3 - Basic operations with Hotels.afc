@@ -726,7 +726,8 @@ And insert a few flights through a custom migration:
 [ruby]class InsertBasicFlightRoutes < ActiveRecord::Migration
 
 	def new_flight(from, to, departure, arrival)
-  	Flight.new(:from => from, :to => to, :departure => departure, :arrival_after => arrival).save
+  	Flight.new(:from => from, :to => to, :departure => departure,
+			   :arrival_after => arrival).save
 	end
 	
   def self.up
