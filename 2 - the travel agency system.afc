@@ -118,7 +118,8 @@ Another approach is to access generic searches as those which implement the Open
 
 [xml]
 <hotels>
-	<link rel="http://caelumobjects.com/hotels/search" href="http://localhost:3000/hotels/open_search" />
+	<link rel="http://caelumobjects.com/hotels/search"
+			href="http://localhost:3000/hotels/open_search" />
 	<link rel="http://caelumobjects.com/hotels/add" href="http://localhost:3000/hotels" />
 	<hotel>
 		<name>Caelum Sao Paulo</name>
