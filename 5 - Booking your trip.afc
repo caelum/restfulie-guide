@@ -9,7 +9,8 @@ It is time to move to implement the process through which an user is capable of 
 The first step is to search for a flight and we shall use the generated search engine to browse through the ones from Sao Paulo to Miami.
 
 [ruby]
-flights = Restfulie.at('http://localhost:3000/flights').search(from => 'Sao Paulo', to => 'Miami')
+flights = Restfulie.at('http://localhost:3000/flights')
+					.search(from => 'Sao Paulo', to => 'Miami')
 flights.each do |f|
 	puts "Flight departing at #{f.departure} for $#{f.price}"
 end
