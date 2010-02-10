@@ -109,7 +109,8 @@ Because the application set up so far a POST entry point that allows hotel creat
 
 [ruby]hotel = {:name => "Caelum Objects Hotel", :city => "Sao Paulo", :room_count => 3}
 
-hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml').create(hotel.to_xml(:root => "hotel"))
+hotel = Restfulie.at('http://localhost:3000/hotels').as('vnd/caelum_hotel+xml')
+													.create(hotel.to_xml(:root => "hotel"))
 
 puts "Response was #{hotel.web_response}"
 [/ruby]
