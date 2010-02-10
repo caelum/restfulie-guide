@@ -88,7 +88,7 @@ There is one major validation step missing in the code above: the object created
 [ruby]valid = Restfulie::MediaType.supports?(request.headers['CONTENT_TYPE']) &&
        	Restfulie::MediaType.media_type(request.headers['CONTENT_TYPE']) == Hotel
 [/ruby]
-[box]
+[/box]
 
 [section  Default behavior]
 
@@ -124,9 +124,9 @@ Sometimes those clients want to access the http response information itself and 
 puts "Hotel created at #{hotel.web_response['Content-type']}"
 [/ruby]
 
-<box>
+[box]
 Now you can remove both new and create methods from your HotelsController as they are not needed.
-</box>
+[/box]
 
 [section  Evolving the server]
 
@@ -316,7 +316,7 @@ Another approach to creating a list of resources is to let hypermedia drive our 
 
 Typical formats that allow representations with hypermedia support are application/xhtml with our custom format:
 
-<box>TOLINK add links here</box>
+[box]TOLINK add links here[/box]
 
 [ruby]<?xml version="1.0" encoding="UTF-8"?>
 <html>
@@ -464,7 +464,7 @@ Given the hotel scenario, we could create different resources:
 <li>http://caelumhotels.com/special</li>
 </ul>
 
-<box>myself/bookings should be my username itself due to caching capabilities for intermediate layers</box>
+[box]myself/bookings should be my username itself due to caching capabilities for intermediate layers[/box]
 
 And finally an aggregating page:
 
@@ -494,7 +494,7 @@ In a web were most data can be cached and does not become stale so fast, this te
 
 All one needs to do is <a href="http://www.mnot.net/cache_docs/">properly use the http headers for caching</a>.
 
-<box>Remember that if your client supports either parallel requests to the server and/or keep-alive connection, the results might be even better.</box>
+[box]Remember that if your client supports either parallel requests to the server and/or keep-alive connection, the results might be even better.[/box]
 
 Pretty much in the same way as with the human web, a distributed system using the web as its infrastructure will <a href="http://www.mnot.net/cache_docs/">gain the same cache benefits </a>as long as they implement correct caching policies through http headers (and correct http verbs).
 
@@ -504,9 +504,9 @@ This approach results in changes applied to one resource not affecting cached re
 
 Sometimes the decision whether to change latency for scalability might depend on how you think your clients will use your resources: in the human web mentioned above, the developer knew exactly how its clients would access it.
 
-<box>Remember: there is zero latency for unexpired resources and there is small latency for retrieving cached versions of a resource from a shared proxy</box>
+[box]Remember: there is zero latency for unexpired resources and there is small latency for retrieving cached versions of a resource from a shared proxy[/box]
 
-<box>TOLINK image shared proxy: show the advantage</box>
+[box]TOLINK image shared proxy: show the advantage[/box]
 
 In distributed systems using REST, guessing how resources will be used can be dangerous as it allows you to tight couple yourself to this behavior while published resources can and would be used in unforeseen ways.
 
@@ -545,7 +545,7 @@ end
 
 [section  Hotel atom entry]
 
-<box>TOLINK explain how to use atom to access every hotel.</box>
+[box]TOLINK explain how to use atom to access every hotel.[/box]
 
 [section  Updating hotels]
 
@@ -739,7 +739,7 @@ And insert a few flights through a custom migration:
 end
 [/ruby]
 
-<box>Note: online travel agencies will usually locate airports near your city prior to executing your search.</box>
+[box]Note: online travel agencies will usually locate airports near your city prior to executing your search.[/box]
 
 We will also add new hotels in Miami and Los Angeles to our travel system:
 
