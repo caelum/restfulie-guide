@@ -82,7 +82,7 @@ If the server wants to avoid one extra request-response trip, it can return the 
 
 Note that render_created will already do it for us, returning a response as:
 
-[box]
+[box GIVE-ME-A-TITLE]
 There is one major validation step missing in the code above: the object created invoking *Restfulie.from* might not be a hotel and we are not checking its content-type. In order to check if the media-type sent matches the expected one:
 
 [ruby]valid = Restfulie::MediaType.supports?(request.headers['CONTENT_TYPE']) &&
@@ -124,7 +124,7 @@ Sometimes those clients want to access the http response information itself and 
 puts "Hotel created at #{hotel.web_response['Content-type']}"
 [/ruby]
 
-[box]
+[box GIVE-ME-A-TITLE]
 Now you can remove both new and create methods from your HotelsController as they are not needed.
 [/box]
 
@@ -176,7 +176,7 @@ Restfulie Rails and C# client implementation supports the creation of dynamic me
 
 REST APIs shall not deal only with HTTP headers, responses and URIs but implement content type negotiation and default serialization behavior that pushes developers towards REST systems, otherwise the developer is still open to write a "restless" system with a Rest-ready API.
 
-[box]
+[box GIVE-ME-A-TITLE]
 Again, other architecture styles might support forward and backward compatibility if thought about it previously, but unfortunately most developers nowadays still have access and are teach to use fixed contracts which do not allow system evolution. With the strength of agile methods and the better understanding of the community that systems evolve and maintaining them when they are not ready for that is expensive, REST frameworks that force backward and forward compatibility, along with teaching them from the start, earn extra points.
 [/box]
 
@@ -316,7 +316,7 @@ Another approach to creating a list of resources is to let hypermedia drive our 
 
 Typical formats that allow representations with hypermedia support are application/xhtml with our custom format:
 
-[box]TOLINK add links here[/box]
+[box GIVE-ME-A-TITLE]TOLINK add links here[/box]
 
 [ruby]<?xml version="1.0" encoding="UTF-8"?>
 <html>
@@ -464,7 +464,7 @@ Given the hotel scenario, we could create different resources:
 <li>http://caelumhotels.com/special</li>
 </ul>
 
-[box]myself/bookings should be my username itself due to caching capabilities for intermediate layers[/box]
+[box GIVE-ME-A-TITLE]myself/bookings should be my username itself due to caching capabilities for intermediate layers[/box]
 
 And finally an aggregating page:
 
@@ -494,7 +494,7 @@ In a web were most data can be cached and does not become stale so fast, this te
 
 All one needs to do is <a href="http://www.mnot.net/cache_docs/">properly use the http headers for caching</a>.
 
-[box]Remember that if your client supports either parallel requests to the server and/or keep-alive connection, the results might be even better.[/box]
+[box GIVE-ME-A-TITLE]Remember that if your client supports either parallel requests to the server and/or keep-alive connection, the results might be even better.[/box]
 
 Pretty much in the same way as with the human web, a distributed system using the web as its infrastructure will <a href="http://www.mnot.net/cache_docs/">gain the same cache benefits </a>as long as they implement correct caching policies through http headers (and correct http verbs).
 
@@ -504,9 +504,9 @@ This approach results in changes applied to one resource not affecting cached re
 
 Sometimes the decision whether to change latency for scalability might depend on how you think your clients will use your resources: in the human web mentioned above, the developer knew exactly how its clients would access it.
 
-[box]Remember: there is zero latency for unexpired resources and there is small latency for retrieving cached versions of a resource from a shared proxy[/box]
+[box GIVE-ME-A-TITLE]Remember: there is zero latency for unexpired resources and there is small latency for retrieving cached versions of a resource from a shared proxy[/box]
 
-[box]TOLINK image shared proxy: show the advantage[/box]
+[box GIVE-ME-A-TITLE]TOLINK image shared proxy: show the advantage[/box]
 
 In distributed systems using REST, guessing how resources will be used can be dangerous as it allows you to tight couple yourself to this behavior while published resources can and would be used in unforeseen ways.
 
@@ -545,7 +545,7 @@ end
 
 [section  Hotel atom entry]
 
-[box]TOLINK explain how to use atom to access every hotel.[/box]
+[box GIVE-ME-A-TITLE]TOLINK explain how to use atom to access every hotel.[/box]
 
 [section  Updating hotels]
 
@@ -739,7 +739,7 @@ And insert a few flights through a custom migration:
 end
 [/ruby]
 
-[box]Note: online travel agencies will usually locate airports near your city prior to executing your search.[/box]
+[box GIVE-ME-A-TITLE]Note: online travel agencies will usually locate airports near your city prior to executing your search.[/box]
 
 We will also add new hotels in Miami and Los Angeles to our travel system:
 
