@@ -1,0 +1,41 @@
+[chapter  Configuring the rails server]
+
+[section  Installing ruby and rails]
+
+The Ruby on Rails website [http://www.rubyonrails.org] provides a simple guide on how to install the latest version of the Ruby language and Rails framework.
+
+First of all, follow its instructions and we are ready to start a hypermedia based system using Rails.
+
+[section  Creating a new project]
+
+Running rails will allow the framework to create the entire project structure, ready to use:
+
+[ruby]rails hotel-system
+cd hotel-system
+[/ruby]
+
+But Rails standard projects still do not support hypermedia resources, therefore its required to add restfulie gem at **hotel-system/config/enviroment.rb**:
+
+[ruby]config.gem "restfulie", :version => "0.6.0", :source => "http://gemcutter.org"
+[/ruby]
+
+Because gems handles gem dependencies, one single command shall download all required gems: restfulie and its dependencies.
+
+[ruby]rake gems:install
+[/ruby]
+
+[section  Rails foregery protection]
+
+Because Rails provides out of the box support to 'forgery' we need to turn it off. This forgery protection does not allow a client to access a POST method without previously passing through the form display process. Because this is not the desired behavior for rest applications over http, we add one line of code to  **hotel-system/config/enviroments/development.rb**:
+
+[ruby]config.action_controller.allow_forgery_protection    = false
+[/ruby]
+
+[section  Running the server]
+
+In order to start the server in your machine and the default port 3000, run the following command in your terminal:
+
+[ruby]script/server
+[/ruby]
+
+Now we can access the hotel system by pointing our browser to **http://localhost:3000**.
