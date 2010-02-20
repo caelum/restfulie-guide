@@ -10,9 +10,9 @@ First of all, follow its instructions and we are ready to start a hypermedia bas
 
 Running rails will allow the framework to create the entire project structure, ready to use:
 
-[ruby]rails hotel-system
+[code]rails hotel-system
 cd hotel-system
-[/ruby]
+[/code]
 
 But Rails standard projects still do not support hypermedia resources, therefore its required to add restfulie gem at **hotel-system/config/enviroment.rb**:
 
@@ -35,7 +35,9 @@ Because Rails provides out of the box support to 'forgery' we need to turn it of
 
 In order to start the server in your machine and the default port 3000, run the following command in your terminal:
 
-[ruby]script/server
-[/ruby]
+[code]script/server
+[/code]
 
 Now we can access the hotel system by pointing our browser to **http://localhost:3000**.
+
+[code]curl http://localhost:3000[/code]
