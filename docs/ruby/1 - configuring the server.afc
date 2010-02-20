@@ -1,4 +1,4 @@
-[chapter  Configuring the rails server]
+[chapter  Configuring the server]
 
 [section  Installing ruby and rails]
 
@@ -24,7 +24,7 @@ Because gems handles gem dependencies, one single command shall download all req
 [ruby]rake gems:install
 [/ruby]
 
-[section  Rails foregery protection]
+[section  Rails forgery protection]
 
 Because Rails provides out of the box support to 'forgery' we need to turn it off. This forgery protection does not allow a client to access a POST method without previously passing through the form display process. Because this is not the desired behavior for rest applications over http, we add one line of code to  **hotel-system/config/enviroments/development.rb**:
 
