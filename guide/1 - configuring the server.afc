@@ -1,3 +1,4 @@
+[tag ruby]
 [chapter  Configuring the server]
 
 [section  Installing ruby and rails]
@@ -41,3 +42,47 @@ In order to start the server in your machine and the default port 3000, run the 
 Now we can access the hotel system by pointing our browser to **http://localhost:3000**.
 
 [code]curl http://localhost:3000[/code]
+
+[/tag ruby]
+[tag java]
+chocolat
+[chapter  Configuring the server]
+
+You can skip this chapter if you have already installed a servlet API compatible servlet container, including any of the Java EE Aplication Servers.
+
+[section  Installing Jetty]
+
+Download Jetty at [http://www.eclipse.org/jetty/] and install it in your machine.
+
+[code]curl http://download.eclipse.org/jetty/stable-7/dist/jetty-distribution-7.0.1.v20091125.tar.gz > jetty-distribution-7.0.1.v20091125.tar.gz
+tar zxf jetty-distribution-7.0.1.v20091125.tar.gz
+rm jetty*.gz
+mv jetty-distribution-7.0.1.v20091125 jetty
+cd jetty
+[/code]
+
+[section  Creating a new project]
+
+Now download VRaptor's [http://vraptor.caelum.com.br/en] blank project and extract it.
+
+[code]unzip vraptor3-blank*.zip[/code]
+
+[section  Configure it under your application server]
+
+[section  Running the server]
+
+Let's configure the server port to run at 3000 by opening the file ::etc/jetty.xml:::
+
+[code]
+	<Set name="port"><SystemProperty name="jetty.port" default="3000"/></Set>
+[/code]
+
+To run the server, invoke the jetty script with start:
+
+[code]cd bin
+./jetty.sh start[/code]
+
+Now we can access the hotel system by pointing our browser to **http://localhost:3000**.
+
+[code]curl http://localhost:3000[/code]
+[/tag java]
