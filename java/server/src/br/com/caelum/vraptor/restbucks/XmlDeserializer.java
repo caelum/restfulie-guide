@@ -1,5 +1,6 @@
 package br.com.caelum.vraptor.restbucks;
 
+import br.com.caelum.travelandrest.Hotel;
 import br.com.caelum.vraptor.deserialization.XStreamXMLDeserializer;
 import br.com.caelum.vraptor.http.ParameterNameProvider;
 import br.com.caelum.vraptor.ioc.ApplicationScoped;
@@ -23,11 +24,8 @@ public class XmlDeserializer extends XStreamXMLDeserializer {
 	@Override
 	protected XStream getXStream() {
 		XStream instance = super.getXStream();
-		instance.processAnnotations(Order.class);
-		instance.processAnnotations(Item.class);
+		instance.processAnnotations(Hotel.class);
 		return instance;
 	}
-
-	
 
 }

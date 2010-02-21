@@ -11,11 +11,11 @@ import br.com.caelum.vraptor.view.Status;
  * Create a generic component which looks up all StateControl's.<br/>
  * Registers one interceptor which receives this component and intercepts all state controls.
  */
-@Intercepts
-public class OrderControllerInterceptor extends ResourceControllerInterceptor<Order>{
-	
-	public OrderControllerInterceptor(OrderStateControl control, Restfulie restfulie, Status status, RequestInfo info, Routes routes) {
-		super(control, restfulie, status, info, routes);
-	}
-
-}
+//@Intercepts
+//public class OrderControllerInterceptor extends ResourceControllerInterceptor<Order>{
+//	
+//	public OrderControllerInterceptor(OrderStateControl control, Restfulie restfulie, Status status, RequestInfo info, Routes routes) {
+//		super(control, restfulie, status, info, routes);
+//	}
+//
+//}

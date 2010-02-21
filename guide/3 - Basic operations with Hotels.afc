@@ -8,23 +8,54 @@ For the client, it means that he is supposed to make more use of request bodies 
 
 [section  Our hotels]
 
-We start creating our hotel model with three fields describing it, its name, city and total number of rooms, using Rail's scaffold feature that also generates some basic controllers:
+We start creating our hotel model with three fields describing it, its name, city and total number of rooms.
+
+[tag ruby]
+Using Rail's scaffold feature that also generates some basic controllers:
 
 [ruby]script/generate scaffold hotel name:string city:string room_count:integer
 rake db:create:all
 rake db:migrate
 [/ruby]
+[/tag ruby]
 
-Our hotel representation can not be pure xml as it is not a hypermedia format [link to Jim's book]:
+[tag java]
+There is also a need for a field describing the last modification occurred with this resource.
 
-[ruby]<hotel>
+[java]
+package br.com.caelum.travelandrest;
+
+import java.util.Calendar;
+
+public class Hotel {
+
+	private String name;
+	private String city;
+	private int roomCount;
+	private Calendar lastModifiedAt;
+	
+}
+[/java]
+[/tag java]
+
+As it is currently configured, our hotel representation as application/xml would be as following:
+
+[xml]<hotel>
 	<name>Caelum Objects Hotel</name>
 	<room_count>220</roomt_count>
 	<city>Sao Paulo</city>
 </hotel>
-[/ruby]
+[/xml]
+
+But plain application/xml representations as shown above are anemic in a sense that they do not provide enough information for consumers on what is possible to do with it (its state transitions) and what is related to it (its relations).
+
+[box]
+In fact, transitions can be considered a subset of all relations a resource contain. If a hotel needs to be accepted prior to shown on lists, the "acceptance" relation can be seen as a transition as creating such Acceptance resource would imply in a state change of the original Hotel resource. The key point is to use standard resource relations as much as possible.
+[/box]
 
 We will adopt a custom media-type that provides information for our hotel's relations, supporting links: **vnd/hotel+xml**.
+
+[tag ruby]
 In order to configure Restfulie to use this media type for our Hotel, one invokes the **media_type** method, passing any number of custom media types that your model can be mapped to:
 
 [ruby]class Hotel < ActiveRecord
@@ -33,8 +64,11 @@ In order to configure Restfulie to use this media type for our Hotel, one invoke
 end
 [/ruby]
 
-Once such media type has been configured, a valid representation of our hotel, showing a relation to a similar hotel by using atom's link element, which describe a relation to another resource, with its meaning described by its rel attribute.
-Such attribute comes from Atom's specification and if the rel element does not follow one of the possible values described by that file, it should be prefixed with its namespace:
+Note that Restfulie still provides representations as application/xml and application/json if content negotiation requires so.
+[/tag ruby]
+
+Once our media types have been chosen, its time to understand what would be a valid representation of our hotel showing a relation to a similar one.
+By using atom's link element, which describe a relation to another resource, with its meaning described by its rel attribute. Such attribute comes from Atom's specification and if the rel element does not follow one of the possible values described by that file, it should be prefixed with its namespace:
 
 [xml]<hotel>
 	<name>Caelum Objects Hotel</name>
@@ -44,21 +78,30 @@ Such attribute comes from Atom's specification and if the rel element does not f
 </hotel>
 [/xml]
 
-In such case, our hotel resource has a similar one that can be retrieved by sending a GET request to <b>http://localhost:3000/hotels/2</b>.
+In such case, our hotel resource has a similar one that can be retrieved by sending a GET request to ::http://localhost:3000/hotels/2::.
+
+The relation type is a well known or custom relation that is understood by clients: custom ones allows less clients to access your domain protocol, while standard ones gives your service more reach.
+
+Throughout the guide, standard relations will be emphasized over custom ones, as with media types.
 
 [section  Creating hotels]
 
-Once the client defined the mime-type and the server configured which classes represents each media types, we can focus on acting with our resources.
+Once the client defined the mime-type and the server configured which classes represents each media types, we can focus on dealing with our resources.
 
-There are two HTTP verbs that allows us to create resources on the server side. In order to create hotels we will use the most widely used solution: sending a **post** request to /hotels.
+There are two HTTP verbs that allows us to create resources on the server side. In order to create hotels we will use the most widely adopted solution: sending a **post** request to /hotels.
 
-First we need to receive the **post** data (the resource representation) and transform it into our domain data. 
+First we need to receive the **post** data (the resource representation) and transform it into our domain data.
 
 If the result was a success, the **post** method should return the resource location and a **201 Created** response, allowing the client to retrieve the resource data if required.
 
+[tag ruby]
 [ruby]location = url_for resource
 render_resource resource, options, {:status => :created, :location => location}
 [/ruby]
+[/tag ruby]
+[tag java]
+
+[/tag java]
 
 This code will generate a response 201 with the resource location in the **Location** header.
 
@@ -75,6 +118,14 @@ The controller still needs to check if the process was successfully completed or
 	end
 end
 [/ruby]
+
+[box]
+Can I receive the hotel data as post/get parameters?
+
+Yes, you can, but that is Non-REST. REST is based on content negotiation (media type negotiation) and resource representations. A client is uncapable of detecting your resource accepted parameters using the HTTP protocol if you use this approach. Some other styles and architectures (as SOA based ones) will define documents that describe which parameters are accepted and their meanings.
+
+In a REST over HTTP application, resources are **only** exchanged through its representations, that are accepted by both client and server.
+[/box]
 
 If the server wants to avoid one extra request-response trip, it can return the resource content with the 201 return code and the client will not need another request to retrieve this information:
 

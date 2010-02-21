@@ -8,41 +8,35 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
+import br.com.caelum.travelandrest.Hotel;
+
 import com.thoughtworks.xstream.XStream;
 
 public class XmlDeserializerTest {
 	
-	private String item() {
-		return	"    <item>"+
-		"      <drink>LATTE</drink>"+
-		"      <milk>SEMI</milk>"+
-		"      <size>LARGE</size>"+
-		"    </item>";
-	}
-	
-	private InputStream orderXml(String items) {
+	private InputStream hotelXml() {
 		return streamFor("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"+
-		"<order>"+
+		"<hotel>"+
 		"  <id>510</id>"+
-		"  <location>TO_TAKE</location>"+
-		"  <items>"+
-			items +
-		"  </items>"+
-		" </order>");
+		"  <name>caelum</name>"+
+		"  <city>sao paulo</city>"+
+		"  <room_count>15</room_count>"+
+		"</hotel>");
 	}
 
 	@Test
 	public void shouldBeCapableOfDeserializingBasicData() {
-		Order order = deserialize(orderXml(""));
-		assertThat(order.getId(), equalTo("510"));
-		assertThat(order.getLocation(), equalTo(Order.Location.TO_TAKE));
-		assertThat(order.getItems().size(), equalTo(0));
+		Hotel hotel = deserialize(hotelXml());
+		assertThat(hotel.getId(), equalTo("510"));
+		assertThat(hotel.getName(), equalTo("caelum"));
+		assertThat(hotel.getCity(), equalTo("sao paulo"));
+		assertThat(hotel.getRoomCount(), equalTo(15));
 	}
 
-	private Order deserialize(InputStream input) {
+	private Hotel deserialize(InputStream input) {
 		XStream deserializer = createXStream();
-		Order order = (Order) deserializer.fromXML(input);
-		return order;
+		Hotel hotel = (Hotel) deserializer.fromXML(input);
+		return hotel;
 	}
 
 	private XStream createXStream() {
@@ -51,21 +45,5 @@ public class XmlDeserializerTest {
 	
 	private InputStream streamFor(String base) {
 		return new ByteArrayInputStream(base.getBytes());
-	}
-
-	@Test
-	public void shouldBeCapableOfReadingAnItem() {
-		Order order = deserialize(orderXml(item()));
-		assertThat(order.getItems().size(), equalTo(1));
-		Item item = order.getItems().get(0);
-		assertThat(item.getDrink(), equalTo(Item.Coffee.LATTE));
-		assertThat(item.getMilk(), equalTo(Item.Milk.SEMI));
-		assertThat(item.getSize(), equalTo(Item.Size.LARGE));
-	}
-
-	@Test
-	public void shouldBeCapableOfReadingItems() {
-		Order order = deserialize(orderXml(item() + item()));
-		assertThat(order.getItems().size(), equalTo(2));
 	}
 }
