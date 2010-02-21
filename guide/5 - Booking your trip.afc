@@ -5,12 +5,6 @@
 It is time to move to implement the process through which an user is capable of booking the entire trip package. We will start by allowing users to search for, book and finally pay a flight, later evolving our system to allow hotel bookings in the same process as well.
 
 
-TODAY: support ratom with child child element
-TODAY: implement dumb search
-implement entire booking process
-
-
-
 
 
 
