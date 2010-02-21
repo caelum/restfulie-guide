@@ -2,7 +2,7 @@
 
 [section REST]
 
-Throughout the manual, we will create a web system that allow clients to book hotels and flights using a RESTful API, implying in a set of constraints which the architecture has to follow in order to obtain the advantages mentioned by <a href="TOLINK">Roy Fielding</a> in <a href="TOLINK">his dissertation</a>.
+Throughout the manual, we will create a web system that allow clients to book hotels and flights using a RESTful API, implying in a set of constraints which the architecture has to follow in order to obtain the advantages mentioned by Roy Fielding in his dissertation.[ref Roy_Fielding]
 
 This chapter will give a small introduction on some key aspects of a REST architecture and how it can be implemented through the web. Only on the next chapter we will have specific code that shall be created and run in your client and server boxes.
 
@@ -10,7 +10,7 @@ This chapter will give a small introduction on some key aspects of a REST archit
 
 Our system is composed by two different client APIs, one allows ourselves to register hotels and browse them, searching for the one that matches our requirements.
 
-A <a hef="TOLINK">typical web service</a> as proposed by SOA architecture, suggests to return a list of hotels whenever the client requires such list, resulting in a xml file enveloped by SOAP with specific namespaces. In order to simplify the structure proposed by such design, we have removed the soap envelope and the namespace:
+A typical web service as proposed by SOA based architecture, suggests to return a list of hotels whenever the client requires such list, resulting in a xml file enveloped by SOAP with specific namespaces. In order to simplify the structure proposed by such design, we have removed the soap envelope and the namespace:[ref SOAP][ref SOA]
 
 [xml]
 <hotels>
