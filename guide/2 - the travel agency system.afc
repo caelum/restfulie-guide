@@ -130,13 +130,13 @@ note right of /hotels: retrieves the new hotel representation
 restfulie->client: hotel
 [/note]
 
-The first two lines of code are to start irb, <a href="TOLINK">ruby's</a> shell, and to load restfulie's client API.
+The first two lines of code are to start irb, ruby's shell, and to load restfulie's client API.[ref irb]
 
 Due to the use of hypermedia within the resource representation, the POST request sent when invoking ::hotels.add:: is enough to create the new resource in the URI provided by the server.
 
 [section XML? Why? Why?]
 
-One of the commons questions is whether one is forced to use XML for formatting a resource representation. REST defines that content negotiation (conneg) is a important feature that clients and server should know how to handle.
+One of the commons questions is whether one is forced to use XML for formatting a resource representation. REST defines that content negotiation (conneg) is a important feature that clients and server should know how to handle.[ref content_negotiation][ref conneg]
 
 This means that the more generic your framework can get when generating the representation, the larger the number of representations it supports and the larger is your client's base that understands this representation.
 

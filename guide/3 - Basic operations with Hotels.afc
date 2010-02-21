@@ -502,9 +502,9 @@ Sometimes a resource is composed by a list of other resources as our hotel list 
 
 In this case, all information come from the same source, but every part has a different probable validity if it is going to be cached. If the page is served as one big chunck of information, it will always be stale due to the random items section. "My orders" is stale only when I place a new order and, in the same way, the top 10 is only stale if any item is bought and surpasses the number of times the 10th item was bought so far.
 
-One of the main issues with this type of pages which aggregate information from one or many sources with <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.21">different expire-expectations</a> is that cached versions in proxies and clients become stale faster than it should for some elements: once one of this providing sources publishes new information or is updated, the entire representation becomes stale..
+One of the main issues with this type of pages which aggregate information from one or many sources with different expire-expectations (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.21) is that cached versions in proxies and clients become stale faster than it should for some elements: once one of this providing sources publishes new information or is updated, the entire representation becomes stale.[ref expire]
 
-<a href="http://www.martinfowler.com/bliki/SegmentationByFreshness.html">Martin Fowler described</a> a well spread approach to allow those pages to be partially cached within local proxies and clients, thus sharing requested representations between multiple users.
+Martin Fowler described a well spread approach to allow those pages to be partially cached within local proxies and clients, thus sharing requested representations between multiple users (http://www.martinfowler.com/bliki/SegmentationByFreshness.html). [ref segmentation_by_freshness]
 
 Given the hotel scenario, we could create different resources:
 
@@ -543,11 +543,11 @@ This allows our proxies to cache each component in our page apart from the page 
 
 In a web were most data can be cached and does not become stale so fast, this technique should usually lessen the amount of data being transfered between client and server.
 
-All one needs to do is <a href="http://www.mnot.net/cache_docs/">properly use the http headers for caching</a>.
+All one needs to do is properly use the http headers for caching (http://www.mnot.net/cache_docs).
 
 <box>Remember that if your client supports either parallel requests to the server and/or keep-alive connection, the results might be even better.</box>
 
-Pretty much in the same way as with the human web, a distributed system using the web as its infrastructure will <a href="http://www.mnot.net/cache_docs/">gain the same cache benefits </a>as long as they implement correct caching policies through http headers (and correct http verbs).
+Pretty much in the same way as with the human web, a distributed system using the web as its infrastructure will gain the same cache benefits as long as they implement correct caching policies through http headers (and correct http verbs).
 
 When your server provides a resource representation linking to a series of other related resources the client and proxies staying on the way will be allowed to cache each and every other resource on its own.
 
@@ -565,13 +565,13 @@ Giving information that will help most cases is fine and providing links to furt
 
 [title  Dynamic contracts]
 
-This is only possible because we have <a href="http://guilhermesilveira.wordpress.com/2009/12/08/hypermedia-making-it-easier-to-create-dynamic-contracts/">signed dynamic contracts with our clients.</a> They expect us to follow some formal format definition (<a href="http://www.w3.org/TR/xhtml1/">defined in xhtml</a>) and processes. How our processes are presented within our representations is the dynamic part of the contract.
+This is only possible because we have signed dynamic contracts with our clients (http://guilhermesilveira.wordpress.com/2009/12/08/hypermedia-making-it-easier-to-create-dynamic-contracts). They expect us to follow some formal format definition (defined in xhtml http://www.w3.org/TR/xhtml1) and processes. How our processes are presented within our representations is the dynamic part of the contract.
 
-While the fixed part can be validated<a href="http://www.w3.org/XML/Schema"> with the use of schema validators</a>, the dynamic part - the process - which is guided by our server needs to be validated through testing the behavior of our applications: asserting that hypermedia guided transitions should be reflected in our application state.
+While the fixed part can be validated with the use of schema validators (http://www.w3.org/XML/Schema), the dynamic part - the process - which is guided by our server needs to be validated through testing the behavior of our applications: asserting that hypermedia guided transitions should be reflected in our application state.
 
 [section  Progressive enhancement]
 
-Martin notes that this is a <a href="http://en.wikipedia.org/wiki/Progressive_enhancement">kind of progressive enhancement</a>: although its definition is related to accessibility, its control over bandwidth benefits are similar to the approach mentioned ones.
+Martin notes that this is a kind of progressive enhancement (http://en.wikipedia.org/wiki/Progressive_enhancement): although its definition is related to accessibility, its control over bandwidth benefits are similar to the approach mentioned ones.
 
 [section  Domain mapping to resources]
 
