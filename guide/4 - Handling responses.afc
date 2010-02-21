@@ -8,19 +8,19 @@ Restfulie makes it easier to handle response codes and headers due to its defaul
 
 [section  Independent behavior]
 
-Restfulie will automatically de-serialize the result's body, no matter which response code it receives. Assuming a <b>200 OK</b> response was returned, the following code will print the hotel name.
+Restfulie will automatically de-serialize the result's body, no matter which response code it receives. Assuming a **200 OK** response was returned, the following code will print the hotel name.
 
 [ruby]	hotel = Restfulie.at('http://localhost:30000/hotels/1').get
 	puts "Hotel #{hotel.name}"
 [/ruby]
 
-<blockquote><b>HEAD</b> requests do not provide any response body.</blockquote>
+<blockquote>**HEAD** requests do not provide any response body.</blockquote>
 
 [section  200 OK]
 
 The most typical result a web request can get is a <strong>200 OK</strong>, meaning that the request was successfully processed, according to the HTTP 1.1 specification [reference].
 
-A <b>GET</b>, <b>POST</b> and <b>DELETE</b> request does not add any specific behavior when receiving a <b>200 OK</b> response.
+A **GET**, **POST** and **DELETE** request does not add any specific behavior when receiving a **200 OK** response.
 [ruby]GET an entity corresponding to the requested resource is sent in the response;
 HEAD the entity-header fields corresponding to the requested resource are sent in the response without any message-body;
 POST an entity describing or containing the result of the action;
@@ -78,13 +78,13 @@ There is one method available for each group of results defined in the HTTP spec
 
 A typical client application will only check for successful results: if the request was unsuccessful, execute some specific control behavior. Redirection and informational responses are handled directly by Restfulie when possible.
 
-For example, a <b>301</b> response from a <b>GET</b> request will be automatically followed but due to the HTTP specification, when executing a <b>POST</b> response it will not follow such response. It can be configured through Restfulie's API, though:
+For example, a **301** response from a **GET** request will be automatically followed but due to the HTTP specification, when executing a **POST** response it will not follow such response. It can be configured through Restfulie's API, though:
 
 [note]TOLINK example on how to follow 301[/note]
 
 [section  The response and it's headers]
 
-Restfulie provides easy access to the response object and it's header through the <b>web_response</b> and <b>web_response[header_name]</b>:
+Restfulie provides easy access to the response object and it's header through the **web_response** and **web_response[header_name]**:
 
 [ruby]hotel = Restfulie.at('http://localhost:30000/hotels/1').get
 puts "The response code was #{hotel.web_response.code}"

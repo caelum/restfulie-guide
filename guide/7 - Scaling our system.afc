@@ -48,22 +48,22 @@ Local cache is supported by default by Restfulie, without any extra effort from 
 
 [section  Conditional getting]
 
-Restfulie allows the use of conditional resource retrieval through the use of <b>Etag</b> and <b>Last-modified</b> headers. Once a resource is retrieved, it keeps within its object both reponse values, so it can use them to retrieve the resource again, when required.
+Restfulie allows the use of conditional resource retrieval through the use of **Etag** and **Last-modified** headers. Once a resource is retrieved, it keeps within its object both reponse values, so it can use them to retrieve the resource again, when required.
 
-Restfulie will use those headers by default if any <b>self</b> relation is invoked as a method, therefore if the server implements an <b>Etag</b> or <b>Last-modified</b> header, the following code would receive a 200 and 304 response in the first and second GET requests, repectively:
+Restfulie will use those headers by default if any **self** relation is invoked as a method, therefore if the server implements an **Etag** or **Last-modified** header, the following code would receive a 200 and 304 response in the first and second GET requests, repectively:
 
 [ruby]hotels = Restfulie.at('http://localhost:3000/hotels').get
 hotels = hotels.self
 [/ruby]
 
-In order to make it work properly, the server needs to implement the resource rendering process correctly with the two mentioned headers. Fortunately, Restfulie's <b>render_collection</b> method automatically does that for us, therefore our hotels list rendering process already returns a 304 response:
+In order to make it work properly, the server needs to implement the resource rendering process correctly with the two mentioned headers. Fortunately, Restfulie's **render_collection** method automatically does that for us, therefore our hotels list rendering process already returns a 304 response:
 
 <pre>render_collection @hotels do |item|
   item.to_xml :controller => self, :only => [:name, :room_count], :skip_instruct => true
 end
 [/ruby]
 
-In the client, the self invocation will use both the received <b>Etag</b> and <b>Last-modified</b> headers:
+In the client, the self invocation will use both the received **Etag** and **Last-modified** headers:
 
 [ruby]hotels = Restfulie.at('http://localhost:3000/hotels').get
 [/ruby]
@@ -77,7 +77,7 @@ The first request retrieves the resources:
 
 <pre>GET http://localhost:3000/hotels/94 HTTP/1.1[/ruby]
 
-And the server response includes the <b>Last-modified</b> header:
+And the server response includes the **Last-modified** header:
 
 <pre>HTTP/1.1 200 OK
 Connection: close
@@ -215,7 +215,7 @@ The entire source code for booking a hotel is available here, with a slightly mo
 
 The above process consists of one initial GET request that retrieves the list of hotels, one extra GET request for each hotel that we shall attempt booking - in order to retrieve all information related to it, and two POST requests for each booking attempt.
 
-A client that successfully books his first attempted hotel will execute a total of 4 http requests, while a client that only succeeds on his <b>n</b>th attempt will execute (1 + 2*n) http requests.
+A client that successfully books his first attempted hotel will execute a total of 4 http requests, while a client that only succeeds on his **n**th attempt will execute (1 + 2*n) http requests.
 
 When a similar number of booking attempts is executed, we can benchmark our application by measuring either amount of cpu process used on all clients + amount of cpu process used on the server, the amount of bandwidth sent and received through all requests or the total amount of time it took between the first client started requesting and the last one finished it process.
 
@@ -341,7 +341,7 @@ The final option that we will show in this book is to create systems with custom
 
 [note]TODO image with every client's feed[/note]
 
-Those client systems support a publisher-subscriber protocol called <b>pubsubhubbub</b> that notifies the aggregation system every time a new hotel is added.
+Those client systems support a publisher-subscriber protocol called **pubsubhubbub** that notifies the aggregation system every time a new hotel is added.
 
 In this case, our aggregation system will the cache hotel's name, room count and URI and use the provided information when users execute their searches. Later when the resource representation expires, any further usage of such hotel requires a new request to the original resource URI, as the diagram shows.
 

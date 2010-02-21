@@ -132,7 +132,7 @@ restfulie->client: hotel
 
 The first two lines of code are to start irb, <a href="TOLINK">ruby's</a> shell, and to load restfulie's client API.
 
-Due to the use of hypermedia within the resource representation, the POST request sent when invoking <i>hotels.add</i> is enough to create the new resource in the URI provided by the server.
+Due to the use of hypermedia within the resource representation, the POST request sent when invoking ::hotels.add:: is enough to create the new resource in the URI provided by the server.
 
 [section XML? Why? Why?]
 
@@ -190,7 +190,7 @@ booking.flights.add flight
 confirmation = booking.pay payment
 [/ruby]
 
-This code is a much richer and powerful example as it uses hypermedia to guide the client through a more complex process, finally finding the requested information as in <i>hotels.at('Sao Paulo').rated(4).sort_by(:price).first</i>
+This code is a much richer and powerful example as it uses hypermedia to guide the client through a more complex process, finally finding the requested information as in ::hotels.at('Sao Paulo').rated(4).sort_by(:price).first::.
 
 Later, there is an atomic execution which involves more than one request:
 [ruby]

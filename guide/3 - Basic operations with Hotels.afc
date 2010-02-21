@@ -527,7 +527,7 @@ And finally an aggregating page:
 
 [/ruby]
 
-And then, for each <b>lazy_load</b> link, we create a <b>div</b> with its content:
+And then, for each **lazy_load** link, we create a **div** with its content:
 
 [ruby]<script>
 $('.lazy_load').each(function(link) {
@@ -577,7 +577,7 @@ Martin notes that this is a <a href="http://en.wikipedia.org/wiki/Progressive_en
 
 The one to one mapping between our domain model and published resource types might not be the best solution, so you can configure Restfulie how to generate a resource representation based on some specific conditions to your system: one or more domain objects that are mapped to a web resource through the arguments passed to the resource representation serialization method.
 
-In such cases our <b>Hotel</b> type can have its <b>to_xml</b> method overriden:
+In such cases our **Hotel** type can have its **to_xml** method overriden:
 
 [ruby]class Hotel < ActiveRecord::Base
 	acts_as_restfulie
@@ -604,7 +604,7 @@ There are two common options to allow resource update, you can either use the ve
 
 PUT requests were used sometimes with partial resource representations due to the non existence of the PATCH verb, which has only lately been approved as a standard.
 
-A typical update behavior with full resource representation include a few steps. Once an URI represents an specific resource, the resource id can be extracted from it. Then it needs to check that the required resource exists returning a <b>404</b> in case it does not, and Rails takes care of both features for us while loading a model:
+A typical update behavior with full resource representation include a few steps. Once an URI represents an specific resource, the resource id can be extracted from it. Then it needs to check that the required resource exists returning a **404** in case it does not, and Rails takes care of both features for us while loading a model:
 
 [ruby]def update
   @hotel = Hotel.find(params[:id])
@@ -621,7 +621,7 @@ After that the resource might be in such a state that it can not be updated. In 
 end
 [/ruby]
 
-Now our hotel representation presents a new link to our clients, letting them know that they can update their hotels through the hotel resource URI with a PUT request. The URI is discovered by asking Rails for the <b>update</b> URI, which was configured in the <b>routes.rb</b> file when the scaffold generator was run.
+Now our hotel representation presents a new link to our clients, letting them know that they can update their hotels through the hotel resource URI with a PUT request. The URI is discovered by asking Rails for the **update** URI, which was configured in the **routes.rb** file when the scaffold generator was run.
 
 [ruby]HTTP 1.1
 GET http://localhost:3000/hotels/1
@@ -641,7 +641,7 @@ Such a GET request to retrieve a hotel now returns:
 </hotel>
 [/ruby]
 
-Our server should check if the hotel can be updated and answer with a <b>405</b> response in case it does not. Such check is provided by Restfulie by invoking the <b>can?</b> method passing an argument, the symbol which is the transition or relation name to our resource.
+Our server should check if the hotel can be updated and answer with a **405** response in case it does not. Such check is provided by Restfulie by invoking the **can?** method passing an argument, the symbol which is the transition or relation name to our resource.
 
 After that, content negotiation takes place so the server checks whether the content sent by the client is comprehensible and makes sense to update this resource. The code to achieve this check is exactly the same as when creating a resource:
 
@@ -667,7 +667,7 @@ end
 
 Because the entire resource representation might override any domain objects relations hidden from the resource view, it is important to give the controller a chance to modify the loaded information from the server prior to using it to update the related objects in the database.
 
-In order to do it, a <b>pre update</b> callback can be implemented by configuring Restfulie to invoke it prior to update:
+In order to do it, a **pre update** callback can be implemented by configuring Restfulie to invoke it prior to update:
 
 <pre>class HotelsController < ApplicationController
   as_restfulie_controller do |config|
@@ -693,7 +693,7 @@ Restfulie provides callbacks for every possible operation with resources.
 
 [section  Removing hotels]
 
-In order to remove hotels from the database, we need to write a <b>destroy</b> method that loads the required domain object and removes it. If it does not exist, the server should answer with a <b>404</b> response and to achieve it we can simply implement the method invoking the find and destroy methods:
+In order to remove hotels from the database, we need to write a **destroy** method that loads the required domain object and removes it. If it does not exist, the server should answer with a **404** response and to achieve it we can simply implement the method invoking the find and destroy methods:
 
 [ruby]def destroy
   @hotel = Hotel.find(params[:id])
@@ -702,9 +702,9 @@ In order to remove hotels from the database, we need to write a <b>destroy</b> m
 end
 [/ruby]
 
-Because Rails already answer with a <b>404 not found</b> response if the model is not not found, we do not need a conditional check.
+Because Rails already answer with a **404 not found** response if the model is not not found, we do not need a conditional check.
 
-Once again, RestfulieController default <b>destroy</b> behavior is to locate the resource and remove it from the database, answering with a <b>404 not found</b> if it is not found. Once our controller includes RestfulieController's behavior, there is no need to write the <b>destroy</b> method again, only if we want to customize it:
+Once again, RestfulieController default **destroy** behavior is to locate the resource and remove it from the database, answering with a **404 not found** if it is not found. Once our controller includes RestfulieController's behavior, there is no need to write the **destroy** method again, only if we want to customize it:
 
 [ruby]class HotelsController < ApplicationController
   include Restfulie::Server::RestController
@@ -714,7 +714,7 @@ Once again, RestfulieController default <b>destroy</b> behavior is to locate the
 end
 [/ruby]
 
-The client will not access the <b>destroy</b> process as an entry point: it will first need to access the resource in order to find out whether it can be removed or not from the server and this will be achieved now, through the use of hypermedia as a guiding feature to our processes and transitions.
+The client will not access the **destroy** process as an entry point: it will first need to access the resource in order to find out whether it can be removed or not from the server and this will be achieved now, through the use of hypermedia as a guiding feature to our processes and transitions.
 
 [section  Hypermedia guided resource removal]
 

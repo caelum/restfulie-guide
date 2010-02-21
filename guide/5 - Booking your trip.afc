@@ -137,7 +137,7 @@ And now, the same code outputs:
 [ruby]	TODO add output
 [/ruby]
 
-Again, Restfulie is smart enough to understand such relations and correctly implement those methods within the Trip if we tell it to do so. In order to see it working, simply <b>do not</b> implement them, but configure Restfulie accordingly:
+Again, Restfulie is smart enough to understand such relations and correctly implement those methods within the Trip if we tell it to do so. In order to see it working, simply **do not** implement them, but configure Restfulie accordingly:
 
 [ruby]class Trip
 
