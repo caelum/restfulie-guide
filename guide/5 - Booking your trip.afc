@@ -269,10 +269,11 @@ We can see the entire process working with a client:
 flights = trip.flights
 flights.add cheaper(flights.search('Sao Paulo', 'Miami')[0])
 trip.payment.add()
-
-TODO pergunta pro jim, payment.add e o recurso ja existia ou pay(coisa)
-
 [/ruby]
+
+[note]
+TODO pergunta pro jim, payment.add e o recurso ja existia ou pay(coisa)
+[/note]
 
 One might argue that our system now contains two different entry points: one for creating hotels and another one for trips.
 
