@@ -12,20 +12,20 @@ import br.com.caelum.vraptor.restfulie.serialization.RestfulSerialization;
 
 import com.thoughtworks.xstream.XStream;
 
-//@Component
-//@RequestScoped
-//public class XmlSerializer extends RestfulSerialization{
-//
-//	public XmlSerializer(HttpServletResponse response,
-//			TypeNameExtractor extractor, Restfulie restfulie, Configuration config) {
-//		super(response, extractor, restfulie, config);
-//	}
-//	
-//	@Override
-//	protected XStream getXStream() {
-//		XStream instance = super.getXStream();
-//		instance.processAnnotations(Hotel.class);
-//		return instance;
-//	}
-//
-//}
+@Component
+@RequestScoped
+public class XmlSerializer extends RestfulSerialization{
+
+	public XmlSerializer(HttpServletResponse response,
+			TypeNameExtractor extractor, Restfulie restfulie, Configuration config) {
+		super(response, extractor, restfulie, config);
+	}
+	
+	@Override
+	protected XStream getXStream() {
+		XStream instance = super.getXStream();
+		instance.processAnnotations(Hotel.class);
+		return instance;
+	}
+
+}

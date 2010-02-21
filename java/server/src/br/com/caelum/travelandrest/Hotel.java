@@ -10,10 +10,12 @@ public class Hotel {
 	private String name;
 	private String city;
 	
-	@XStreamAlias("room_count")
+	@XStreamAlias("room-count")
 	private int roomCount;
 	private Calendar lastModifiedAt;
 	private String id;
+	
+	private int rate;
 	
 	public void setId(String id) {
 		this.id = id;
